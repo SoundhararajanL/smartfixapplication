@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from './smartfix.png';
-import 'react-toastify/dist/ReactToastify.css';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Signup() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSignup = () => {
     if (!username || !email || !password) {
@@ -41,7 +41,8 @@ function Signup() {
     fetch('https://646b0c027d3c1cae4ce31370.mockapi.io/new', requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        toast.success('User registered successfully!', { position: toast.POSITION.TOP_CENTER });
+        
+        navigate('/login', { state: { signupsuccess: true } });
       })
       .catch((error) => {
         toast.error('Error occurred while registering user!', { position: toast.POSITION.TOP_CENTER });
@@ -92,11 +93,10 @@ function Signup() {
             <button className='button-3' onClick={handleReset}>
               Reset
             </button>
-            
           </div>
         </div>
       </body>
-      <ToastContainer />
+      <ToastContainer position="top-center" />
     </div>
   );
 }

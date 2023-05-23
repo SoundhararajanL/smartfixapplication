@@ -10,6 +10,13 @@ function Login() {
   const [userData, setUserData] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const signupsuccess = location.state?.signupsuccess;
+
+  useEffect(() => {
+    if (signupsuccess) {
+      toast.success('User registered successfully!', { position: toast.POSITION.TOP_CENTER });
+    }
+  }, [signupsuccess]);
 
   useEffect(() => {
     fetch('https://646b0c027d3c1cae4ce31370.mockapi.io/new')
