@@ -26,7 +26,7 @@ function Login() {
     if (user) {
       toast.success('Login successful!', { position: toast.POSITION.TOP_CENTER });
     } else {
-      toast.error('Invalid input', { position: toast.POSITION.TOP_CENTER });
+      toast.error('Invalid username or password', { position: toast.POSITION.TOP_CENTER });
     }
   };
 
