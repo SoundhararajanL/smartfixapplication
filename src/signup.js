@@ -16,11 +16,12 @@ function Signup() {
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{1,})?$/;
     if (!emailRegex.test(email)) {
-      toast.error('Please enter a valid email address.', { position: toast.POSITION.TOP_CENTER });
-      return;
-    }
+    toast.error('Please enter a valid email address.', { position: toast.POSITION.TOP_CENTER });
+    return;
+}
+
     if (password.length < 6) {
       toast.error('Password should be at least 6 characters long.', { position: toast.POSITION.TOP_CENTER });
       return;
