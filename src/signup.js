@@ -1,9 +1,9 @@
-import {  useState } from 'react';
+import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from './smartfix.png';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { Link } from 'react-router-dom';
 
 function Signup() {
   const [username, setUsername] = useState('');
@@ -11,6 +11,21 @@ function Signup() {
   const [password, setPassword] = useState('');
 
   const handleSignup = () => {
+    if (!username || !email || !password) {
+      toast.error('Please fill in all the required fields.', { position: toast.POSITION.TOP_CENTER });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address.', { position: toast.POSITION.TOP_CENTER });
+      return;
+    }
+    if (password.length < 6) {
+      toast.error('Password should be at least 6 characters long.', { position: toast.POSITION.TOP_CENTER });
+      return;
+    }
+
     const userData = {
       username: username,
       email: email,
@@ -33,6 +48,12 @@ function Signup() {
       });
   };
 
+  const handleReset = () => {
+    setUsername('');
+    setEmail('');
+    setPassword('');
+  };
+
   return (
     <div>
       <header>
@@ -44,10 +65,36 @@ function Signup() {
         <div className='container'>
           <h1>User Registration</h1>
           <div>
-            <input type='text' name='username' placeholder='Username' onChange={(e) => setUsername(e.target.value)} aria-required />
-            <input type='email' name='email' placeholder='Email' onChange={(e) => setEmail(e.target.value)} aria-required />
-            <input type='password' name='password' placeholder='Password' onChange={(e) => setPassword(e.target.value)} aria-required />
-            <button className='button-29' onClick={handleSignup}>Submit</button>
+            <input
+              type='text'
+              name='username'
+              placeholder='Username'
+              value={username}
+              onChange={(e) => setUsername(e.target.value.trim())}
+            />
+            <input
+              type='email'
+              name='email'
+              placeholder='Email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value.trim())}
+            />
+            <input
+              type='password'
+              name='password'
+              placeholder='Password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button className='button-3' onClick={handleSignup}>
+              Submit
+            </button>
+            <button className='button-3' onClick={handleReset}>
+              Reset
+            </button>
+            <Link className='text' to='/login'>
+              <h5>Back to Login</h5>
+            </Link>
           </div>
         </div>
       </body>
