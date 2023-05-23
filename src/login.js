@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from './smartfix.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [userData, setUserData] = useState([]);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetch('https://646b0c027d3c1cae4ce31370.mockapi.io/new')
@@ -16,15 +18,15 @@ function Login() {
   }, []);
 
   const handleLogin = () => {
-
     if (!username || !password) {
       toast.error('Please fill in all the required fields.', { position: toast.POSITION.TOP_CENTER });
       return;
     }
+
     const user = userData.find((user) => user.username === username && user.password === password);
 
     if (user) {
-      toast.success('Login successful!', { position: toast.POSITION.TOP_CENTER });
+      navigate('/home', { state: { loginSuccess: true } });
     } else {
       toast.error('Invalid username or password', { position: toast.POSITION.TOP_CENTER });
     }
