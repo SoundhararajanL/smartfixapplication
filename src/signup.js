@@ -92,9 +92,7 @@ function Signup() {
             <button className='button-3' onClick={handleReset}>
               Reset
             </button>
-            <Link className='text' to='/login'>
-              <h5>Back to Login</h5>
-            </Link>
+            
           </div>
         </div>
       </body>
