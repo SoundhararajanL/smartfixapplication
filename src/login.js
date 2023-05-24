@@ -43,16 +43,23 @@ function Login() {
     <div>
       <div>
         <div>
-          <img src={logo} className='image' alt='Logo' />
+          <img src={logo} className='login-image' alt='Logo' />
+          <div class="text-container">
+            <h2><p>SmartFix4.0</p>
+            <p>Here is the smartest way to make your fixtures intelligent!</p></h2>
+            <p>SmartFix4.0 from Forms & Gears/ASM is the smartest way to transform your existing fixture/workholding into intelligent, IoT enabled, Industry 4.0 fixtures/workholdings. Talk to our experts and know how you can increase your productivity with lesser manpower.</p>
+            <p>Call us now at +91 7823962010.</p>
+          </div>
+
         </div>
       </div>
 
       <body>
-        <div className='container'>
+        <div className='login'>
           <h1>User Login</h1>
           <div>
-            <input type='text' name='username' placeholder='Username' onChange={(e) => setUsername(e.target.value.trim())}  />
-            <input type='password' name='password' placeholder='Password' onChange={(e) => setPassword(e.target.value)}  />
+            <input type='text' name='username' placeholder='Username' onChange={(e) => setUsername(e.target.value.trim())} />
+            <input type='password' name='password' placeholder='Password' onChange={(e) => setPassword(e.target.value)} />
             <button className='button-3' onClick={handleLogin}>Login</button>
           </div>
           <div>
