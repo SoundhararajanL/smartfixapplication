@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from './smartfix.png';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Signup() {
@@ -18,9 +19,9 @@ function Signup() {
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{1,})?$/;
     if (!emailRegex.test(email)) {
-    toast.error('Please enter a valid email address.', { position: toast.POSITION.TOP_CENTER });
-    return;
-}
+      toast.error('Please enter a valid email address.', { position: toast.POSITION.TOP_CENTER });
+      return;
+    }
 
     if (password.length < 6) {
       toast.error('Password should be at least 6 characters long.', { position: toast.POSITION.TOP_CENTER });
@@ -33,19 +34,14 @@ function Signup() {
       password: password,
     };
 
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
-    };
-
-    fetch('https://646b0c027d3c1cae4ce31370.mockapi.io/new', requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        
+    axios
+      .post('http://localhost:3000/persons', userData)
+      .then((response) => {
+        toast.success('User registered successfully!', { position: toast.POSITION.TOP_CENTER });
         navigate('/login', { state: { signupsuccess: true } });
       })
       .catch((error) => {
+        console.error(error);
         toast.error('Error occurred while registering user!', { position: toast.POSITION.TOP_CENTER });
       });
   };
@@ -97,7 +93,7 @@ function Signup() {
           </div>
         </div>
       </body>
-      <ToastContainer position="top-center" />
+      <ToastContainer position='top-center' />
     </div>
   );
 }
