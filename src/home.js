@@ -20,22 +20,22 @@ function Home() {
               <h4 class="text-right">Profile Settings</h4>
             </div>
             <div class="row mt-2">
-              <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="first name" value=""/></div>
-              <div class="col-md-6"><label class="labels">Surname</label><input type="text" class="form-control" value="" placeholder="surname"/></div>
+              <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="first name"/></div>
+              <div class="col-md-6"><label class="labels">Surname</label><input type="text" class="form-control" placeholder="surname"/></div>
             </div>
             <div class="row mt-3">
-              <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" placeholder="enter phone number" value=""/></div>
-              <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text" class="form-control" placeholder="enter address line 1" value=""/></div>
-              <div class="col-md-12"><label class="labels">Address Line 2</label><input type="text" class="form-control" placeholder="enter address line 2" value=""/></div>
-              <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" placeholder="enter address line 2" value=""/></div>
-              <div class="col-md-12"><label class="labels">State</label><input type="text" class="form-control" placeholder="enter address line 2" value=""/></div>
-              <div class="col-md-12"><label class="labels">Area</label><input type="text" class="form-control" placeholder="enter address line 2" value=""/></div>
-              <div class="col-md-12"><label class="labels">Email ID</label><input type="text" class="form-control" placeholder="enter email id" value=""/></div>
-              <div class="col-md-12"><label class="labels">Education</label><input type="text" class="form-control" placeholder="education" value=""/></div>
+              <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" placeholder="enter phone number"/></div>
+              <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text" class="form-control" placeholder="enter address line 1"/></div>
+              <div class="col-md-12"><label class="labels">Address Line 2</label><input type="text" class="form-control" placeholder="enter address line 2"/></div>
+              <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" placeholder="enter address line 2"/></div>
+              <div class="col-md-12"><label class="labels">State</label><input type="text" class="form-control" placeholder="enter address line 2"/></div>
+              <div class="col-md-12"><label class="labels">Area</label><input type="text" class="form-control" placeholder="enter address line 2"/></div>
+              <div class="col-md-12"><label class="labels">Email ID</label><input type="text" class="form-control" placeholder="enter email id"/></div>
+              <div class="col-md-12"><label class="labels">Education</label><input type="text" class="form-control" placeholder="education"/></div>
             </div>
             <div class="row mt-3">
-              <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value=""/></div>
-              <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="" placeholder="state"/></div>
+              <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country"/></div>
+              <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" placeholder="state"/></div>
             </div>
             <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div>
           </div>
@@ -43,8 +43,8 @@ function Home() {
         <div class="col-md-4">
           <div class="p-3 py-5">
             <div class="d-flex justify-content-between align-items-center experience"><span>Edit Experience</span><span class="border px-3 p-1 add-experience"><i class="fa fa-plus"></i>&nbsp;Experience</span></div><br></br>
-              <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text" class="form-control" placeholder="experience" value=""/></div> <br></br>
-                <div class="col-md-12"><label class="labels">Additional Details</label><input type="text" class="form-control" placeholder="additional details" value=""/></div>
+              <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text" class="form-control" placeholder="experience"/></div> <br></br>
+                <div class="col-md-12"><label class="labels">Additional Details</label><input type="text" class="form-control" placeholder="additional details"/></div>
              
           </div>
         </div>
