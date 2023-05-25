@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from './smartfix.png';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [userData, setUserData] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const signupsuccess = location.state?.signupsuccess;
@@ -18,25 +18,33 @@ function Login() {
     }
   }, [signupsuccess]);
 
-  useEffect(() => {
-    fetch('https://646b0c027d3c1cae4ce31370.mockapi.io/new')
-      .then((response) => response.json())
-      .then((data) => setUserData(data));
-  }, []);
-
   const handleLogin = () => {
     if (!username || !password) {
       toast.error('Please fill in all the required fields.', { position: toast.POSITION.TOP_CENTER });
       return;
     }
 
-    const user = userData.find((user) => user.username === username && user.password === password);
+    const userData = {
+      username: username,
+      password: password,
+    };
 
-    if (user) {
-      navigate('/home', { state: { loginSuccess: true } });
-    } else {
-      toast.error('Invalid username or password', { position: toast.POSITION.TOP_CENTER });
-    }
+    axios
+      .post('http://localhost:3000/persons/login', userData)
+      .then((response) => {
+        const { success } = response.data;
+
+        if (success) {
+          toast.success('Login successful!', { position: toast.POSITION.TOP_CENTER });
+          navigate('/home', { state: { loginSuccess: true } });
+        } else {
+          toast.error('Invalid username or password', { position: toast.POSITION.TOP_CENTER });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error('Error occurred while logging in!', { position: toast.POSITION.TOP_CENTER });
+      });
   };
 
   return (
@@ -45,12 +53,15 @@ function Login() {
         <div>
           <img src={logo} className='login-image' alt='Logo' />
           <div class="text-container">
-            <h2><p>SmartFix4.0</p>
-            <p>Here is the smartest way to make your fixtures intelligent!</p></h2>
-            <p>SmartFix4.0 from Forms & Gears/ASM is the smartest way to transform your existing fixture/workholding into intelligent, IoT enabled, Industry 4.0 fixtures/workholdings. Talk to our experts and know how you can increase your productivity with lesser manpower.</p>
+            <h2>
+              <p>SmartFix4.0</p>
+              <p>Here is the smartest way to make your fixtures intelligent!</p>
+            </h2>
+            <p>
+              SmartFix4.0 from Forms & Gears/ASM is the smartest way to transform your existing fixture/workholding into intelligent, IoT enabled, Industry 4.0 fixtures/workholdings. Talk to our experts and know how you can increase your productivity with lesser manpower.
+            </p>
             <p>Call us now at +91 7823962010.</p>
           </div>
-
         </div>
       </div>
 

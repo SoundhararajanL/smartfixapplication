@@ -35,7 +35,7 @@ function Signup() {
     };
 
     axios
-      .post('http://localhost:3000/persons', userData)
+      .post('http://localhost:3000/persons/signup', userData)
       .then((response) => {
         toast.success('User registered successfully!', { position: toast.POSITION.TOP_CENTER });
         navigate('/login', { state: { signupsuccess: true } });
