@@ -60,7 +60,7 @@ function Signup() {
         </div>
       </header>
       <body>
-        <div className='container'>
+        <div className='signup-box'>
           <h1>User Registration</h1>
           <div>
             <input
