@@ -43,7 +43,7 @@ function Login() {
       })
       .catch((error) => {
         console.error(error);
-        toast.error('Error occurred while logging in!', { position: toast.POSITION.TOP_CENTER });
+        toast.error('invalid Username or Password', { position: toast.POSITION.TOP_CENTER });
       });
   };
 
