@@ -20,7 +20,7 @@ const UserDetailsSchema = new mongoose.Schema(
     collection: 'Persons',
   }
 );
-
+// encrypted password
 UserDetailsSchema.methods.comparePassword = async function (enteredPassword) {
   try {
     return await bcrypt.compare(enteredPassword, this.password);
