@@ -29,9 +29,7 @@ router.post('/login', async (req, res) => {
       return;
     }
 
-    const validPassword = await person.comparePassword(password);
-
-    if (!validPassword) {
+    if (person.password !== password) {
       res.status(400).json({ success: false, message: 'Invalid username or password' });
       return;
     }
