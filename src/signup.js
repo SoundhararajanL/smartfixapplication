@@ -37,8 +37,13 @@ function Signup() {
     axios
       .post('http://localhost:3000/persons/signup', userData)
       .then((response) => {
-        toast.success('User registered successfully!', { position: toast.POSITION.TOP_CENTER });
-        navigate('/login', { state: { signupsuccess: true } });
+        toast.success('User registered successfully!',{
+          position: toast.POSITION.TOP_CENTER,
+            autoClose: 500,         
+            onClose: () => {
+              navigate('/login', { state: { loginSuccess: true } });
+            }
+          });
       })
       .catch((error) => {
         console.error(error);

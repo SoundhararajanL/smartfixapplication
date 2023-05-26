@@ -10,13 +10,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  const signupsuccess = location.state?.signupsuccess;
-
-  useEffect(() => {
-    if (signupsuccess) {
-      toast.success('User registered successfully!', { position: toast.POSITION.TOP_CENTER });
-    }
-  }, [signupsuccess]);
+  
 
   const handleLogin = () => {
     if (!username || !password) {
@@ -32,20 +26,27 @@ function Login() {
     axios
       .post('http://localhost:3000/persons/login', userData)
       .then((response) => {
-        const { success } = response.data;
+        const success = response.data.success;
 
         if (success) {
-          toast.success('Login successful!', { position: toast.POSITION.TOP_CENTER });
-          navigate('/home', { state: { loginSuccess: true } });
+          toast.success('Login successful!', {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 500,
+            onClose: () => {
+              navigate('/home', { state: { loginSuccess: true } });
+            }
+          });
         } else {
           toast.error('Invalid username or password', { position: toast.POSITION.TOP_CENTER });
         }
       })
       .catch((error) => {
         console.error(error);
-        toast.error('invalid Username or Password', { position: toast.POSITION.TOP_CENTER });
+        toast.error('Invalid username or password', { position: toast.POSITION.TOP_CENTER });
       });
   };
+
+  
 
   return (
     <div>
