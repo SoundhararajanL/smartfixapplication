@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import './App.css';
+import axios from 'axios';
 
 function Home() {
   const [fields, setFields] = useState([{ label: '', type: '' }]);
@@ -50,6 +51,28 @@ function Home() {
       toast.error('Please fill all the required field labels.');
     } else {
       setShowTable(true);
+
+      const templateData = {
+        fields: fields.map((field) => ({
+          label: field.label,
+          type: field.type,
+        })),
+      };
+
+      axios
+        .post('http://localhost:3000/HomeData', templateData)
+        .then((response) => {
+          toast.success('Template saved successfully!', {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 1000,
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error('Error occurred while saving template!', {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        });
     }
   };
 
@@ -135,7 +158,9 @@ function Home() {
                           handleFieldChange(index, 'type', e.target.value)
                         }
                       >
-                        <option value="">Type</option>
+                        <option value="" disabled hidden>
+                          Type
+                        </option>
                         <option value="text">Text</option>
                         <option value="number">Number</option>
                         <option value="date">Date</option>
@@ -151,7 +176,7 @@ function Home() {
                 </div>
               </div>
               <div className="modal-footer">
-              <button
+                <button
                   type="button"
                   className="btn btn-danger"
                   onClick={handleResetFields}
@@ -173,7 +198,6 @@ function Home() {
                 >
                   Save Template
                 </button>
-               
               </div>
             </div>
           </div>
