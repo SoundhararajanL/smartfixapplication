@@ -216,3 +216,21 @@ input[type="password"] {
   border: 10px;
 
 }
+
+/* home.js */
+.field-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.field-container input[type="text"],
+.field-container select {
+  margin-right: 10px;
+}
+
+.delete-icon {
+  color: red;
+  cursor: pointer;
+  margin-left: 10px;
+}

@@ -1,32 +1,61 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import './App.css';
 
 function Home() {
-  const [fields, setFields] = useState([{ label: '', type: 'text' }]);
-  const [fieldLabel, setFieldLabel] = useState('');
-  const [fieldType, setFieldType] = useState('text');
+  const [fields, setFields] = useState([{ label: '', type: '' }]);
   const [showTable, setShowTable] = useState(false);
 
   const handleAddField = () => {
-    setFields([...fields, { label: '', type: 'text' }]);
+    setFields([...fields, { label: '', type: '' }]);
   };
 
   const handleFieldChange = (index, fieldProperty, value) => {
     const updatedFields = [...fields];
     updatedFields[index][fieldProperty] = value;
+
+    if (fieldProperty === 'type') {
+      updatedFields[index].type = value;
+      if (value === 'date') {
+        updatedFields[index].label = 'Date';
+      } else {
+        updatedFields[index].label = '';
+      }
+    }
+
     setFields(updatedFields);
   };
 
-  const handleFieldLabelChange = (e) => {
-    setFieldLabel(e.target.value);
+  const isFieldLabelEmpty = () => {
+    for (let i = 0; i < fields.length; i++) {
+      if (fields[i].label.trim() === '') {
+        return true;
+      }
+    }
+    return false;
   };
 
-  const handleFieldTypeChange = (e) => {
-    setFieldType(e.target.value);
+  const handleRemoveField = (index) => {
+    const updatedFields = [...fields];
+    updatedFields.splice(index, 1);
+    setFields(updatedFields);
   };
 
   const handleSaveTemplate = () => {
-    setShowTable(true);
+    if (isFieldLabelEmpty()) {
+      toast.error('Please fill all the required field labels.');
+    } else {
+      setShowTable(true);
+    }
+  };
+
+  const handleResetFields = () => {
+    setFields([{ label: '', type: '' }]);
+    setShowTable(false);
   };
 
   return (
@@ -55,14 +84,14 @@ function Home() {
 
       <div>
         <div className="text-center mb-4">
-        <button 
-          type="button"
-          className="btn btn-primary " 
-          data-toggle="modal"
-          data-target="#exampleModalCenter"
-        >
-          Create Job Card Template
-        </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            data-toggle="modal"
+            data-target="#exampleModalCenter"
+          >
+            Create Job Card Template
+          </button>
         </div>
 
         <div
@@ -91,9 +120,9 @@ function Home() {
               <div className="modal-body">
                 <div>
                   {fields.map((field, index) => (
-                    <div key={index}>
+                    <div key={index} className="field-container">
                       <input
-                        type="text"
+                        type={field.type === 'date' ? 'date' : 'text'}
                         value={field.label}
                         onChange={(e) =>
                           handleFieldChange(index, 'label', e.target.value)
@@ -106,35 +135,51 @@ function Home() {
                           handleFieldChange(index, 'type', e.target.value)
                         }
                       >
+                        <option value="">Type</option>
                         <option value="text">Text</option>
-                        <option value="num">Number</option>
+                        <option value="number">Number</option>
                         <option value="date">Date</option>
                       </select>
+
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        className="delete-icon"
+                        onClick={() => handleRemoveField(index)}
+                      />
                     </div>
                   ))}
                 </div>
               </div>
               <div className="modal-footer">
+              <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={handleResetFields}
+                >
+                  Reset Fields
+                </button>
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-primary"
                   onClick={handleAddField}
                 >
                   Add field
                 </button>
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-success"
                   data-dismiss="modal"
                   onClick={handleSaveTemplate}
                 >
                   Save Template
                 </button>
+               
               </div>
             </div>
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
