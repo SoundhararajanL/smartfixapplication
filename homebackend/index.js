@@ -11,19 +11,11 @@ app.use(morgan('dev'));
 app.use(cors());
 
 // Router
-const homeRoute = require('./homeRoute');
-app.use('/HomeData', homeRoute);
+const routes = require('./routes');
+app.use('/HomeData', routes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//   console.log(`Server started on port ${PORT}`);
-// });
-
-// const server = app.listen(0, () => {
-//   const port = server.address().port;
-//   console.log(`Server started on port ${port}`);
-// });
 
 // Connect to MongoDB
 mongoose
@@ -41,4 +33,3 @@ mongoose
   .catch((err) => {
     console.log('DB not connected', err);
   });
-
