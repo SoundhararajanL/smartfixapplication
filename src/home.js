@@ -186,7 +186,8 @@ function Home() {
 
       {showTable && (
         <div className="container mt-4">
-          <h4>Saved Template: {templateName}</h4>
+          <h4>Saved Template:</h4>
+          <h6>Template Name :  {templateName}</h6>
           <table className="table table-bordered">
             <thead>
               <tr>
