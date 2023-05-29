@@ -94,7 +94,7 @@ function Home() {
           <div className="card-header" role="document">
             <div>
               <div>
-                <h5>Create Job Card Template</h5>
+                <h5>Job Card Template</h5>
               </div>
               <div className="card-body">
                 <form>
@@ -102,11 +102,15 @@ function Home() {
                     <label className="card-title" htmlFor="templateName">Template Name</label>
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control mx-auto"
                       placeholder="Enter template name"
                       value={templateName}
                       onChange={(e) => setTemplateName(e.target.value)}
+                      style={{ width: '200px' }} // Adjust the width as needed
                     />
+
+
+
                     <label className="card-title mt-3" htmlFor="fields">Fields</label>
                     <table className="table table-bordered">
                       <thead>

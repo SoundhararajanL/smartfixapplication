@@ -216,6 +216,14 @@ input[type="password"] {
   border: 1px solid #000000
 
 }
+.smaller-input {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+  width: 200px; /* Adjust the width as needed */
+}
+
 
 /* home.js */
 .field-container {
@@ -234,3 +242,4 @@ input[type="password"] {
   cursor: pointer;
   margin-left: 10px;
 }
+
