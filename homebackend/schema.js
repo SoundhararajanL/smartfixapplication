@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema({
+  templateName: {
+    type: String,
+    required: true,
+  },
   fields: [
     {
-      label: {
+      field: {
         type: String,
         required: true,
       },
@@ -11,12 +15,9 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      value: {
-        type: String,
-        required: true,
-      },
+      
     },
   ],
 });
 
-module.exports = mongoose.model('Home', schema);
+module.exports = mongoose.model('Template', schema);
