@@ -8,36 +8,18 @@ import './App.css';
 import axios from 'axios';
 
 function Home() {
-  const [templateName, setTemplateName] = useState('');
-  const [fields, setFields] = useState([{ field: '', type: '', value: '' }]);
+  const [jobCardTemplates, setJobCardTemplates] = useState([]);
   const [showTable, setShowTable] = useState(false);
-  const [jobcard, setJobCard] = useState(false);
 
-  const handleAddField = () => {
-    setFields([...fields, { field: '', type: '', value: '' }]);
+  const handleAddTemplate = () => {
+    setJobCardTemplates([...jobCardTemplates, { templateName: '', fields: [{ field: '', type: 'select' }] }]);
   };
 
-  const handleFieldChange = (index, fieldProperty, value) => {
-    const updatedFields = [...fields];
-    updatedFields[index][fieldProperty] = value;
-    setFields(updatedFields);
-  };
+  const handleSaveTemplate = (index) => {
+    const template = jobCardTemplates[index];
 
-  const handleResetFields = () => {
-    setTemplateName('');
-    setFields([{ field: '', type: '', value: '' }]);
-    setShowTable(false); // Hide the table after resetting fields
-  };
-
-  const handleRemoveField = (index) => {
-    const updatedFields = [...fields];
-    updatedFields.splice(index, 1);
-    setFields(updatedFields);
-  };
-
-  const handleSaveTemplate = () => {
     // Check if any required fields are empty
-    const hasEmptyFields = fields.some((field) => field.field === '' || field.type === '');
+    const hasEmptyFields = template.fields.some((field) => field.field === '' || field.type === '');
 
     if (hasEmptyFields) {
       toast.error('Please fill in all required fields.', {
@@ -46,11 +28,9 @@ function Home() {
       return; // Stop execution if there are empty fields
     }
 
-    setShowTable(true);
-
     const templateData = {
-      templateName,
-      fields: fields.map((field) => ({
+      templateName: template.templateName,
+      fields: template.fields.map((field) => ({
         field: field.field,
         type: field.type,
       })),
@@ -62,10 +42,8 @@ function Home() {
         toast.success('Template saved successfully!', {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 1000,
-          onClose: () => {
-            setShowTable(true); // Show the table after closing the success message
-          },
         });
+        setShowTable(true);
       })
       .catch((error) => {
         console.error(error);
@@ -75,6 +53,12 @@ function Home() {
       });
   };
 
+  const handleRemoveTemplate = (index) => {
+    const updatedTemplates = [...jobCardTemplates];
+    updatedTemplates.splice(index, 1);
+    setJobCardTemplates(updatedTemplates);
+  };
+
   return (
     <div>
       <div className="container mt-4">
@@ -82,15 +66,21 @@ function Home() {
           <button
             type="button"
             className="btn btn-primary"
-            onClick={() => setJobCard(true)}
+            onClick={handleAddTemplate}
           >
             Create Job Card Template
           </button>
         </div>
       </div>
 
-      {jobcard && (
-        <div className="card text-center" id="exampleModalCenter" tabIndex="-1" role="dialog">
+      {jobCardTemplates.map((jobCardTemplate, index) => (
+        <div
+          key={index}
+          className="card text-center"
+          id={`exampleModalCenter-${index}`}
+          tabIndex="-1"
+          role="dialog"
+        >
           <div className="card-header" role="document">
             <div>
               <div>
@@ -99,19 +89,26 @@ function Home() {
               <div className="card-body">
                 <form>
                   <div className="card-text">
-                    <label className="card-title" htmlFor="templateName">Template Name</label>
+                    <label className="card-title" htmlFor={`templateName-${index}`}>
+                      Template Name
+                    </label>
                     <input
                       type="text"
                       className="form-control mx-auto"
                       placeholder="Enter template name"
-                      value={templateName}
-                      onChange={(e) => setTemplateName(e.target.value)}
+                      value={jobCardTemplate.templateName}
+                      onChange={(e) => {
+                        const updatedTemplates = [...jobCardTemplates];
+                        updatedTemplates[index].templateName = e.target.value;
+                        setJobCardTemplates(updatedTemplates);
+                      }}
                       style={{ width: '200px' }} // Adjust the width as needed
+                      id={`templateName-${index}`}
                     />
 
-
-
-                    <label className="card-title mt-3" htmlFor="fields">Fields</label>
+                    <label className="card-title mt-3" htmlFor={`fields-${index}`}>
+                      Fields
+                    </label>
                     <table className="table table-bordered">
                       <thead>
                         <tr>
@@ -121,22 +118,30 @@ function Home() {
                         </tr>
                       </thead>
                       <tbody>
-                        {fields.map((field, index) => (
-                          <tr key={index}>
+                        {jobCardTemplate.fields.map((field, fieldIndex) => (
+                          <tr key={fieldIndex}>
                             <td>
                               <input
                                 type="text"
                                 className="form-control"
                                 placeholder="Field name"
                                 value={field.field}
-                                onChange={(e) => handleFieldChange(index, 'field', e.target.value)}
+                                onChange={(e) => {
+                                  const updatedTemplates = [...jobCardTemplates];
+                                  updatedTemplates[index].fields[fieldIndex].field = e.target.value;
+                                  setJobCardTemplates(updatedTemplates);
+                                }}
                               />
                             </td>
                             <td>
                               <select
                                 className="form-control"
                                 value={field.type}
-                                onChange={(e) => handleFieldChange(index, 'type', e.target.value)}
+                                onChange={(e) => {
+                                  const updatedTemplates = [...jobCardTemplates];
+                                  updatedTemplates[index].fields[fieldIndex].type = e.target.value;
+                                  setJobCardTemplates(updatedTemplates);
+                                }}
                               >
                                 <option value="">-- Select --</option>
                                 <option value="text">Text</option>
@@ -148,7 +153,11 @@ function Home() {
                               <button
                                 type="button"
                                 className="btn btn-danger btn-sm"
-                                onClick={() => handleRemoveField(index)}
+                                onClick={() => {
+                                  const updatedTemplates = [...jobCardTemplates];
+                                  updatedTemplates[index].fields.splice(fieldIndex, 1);
+                                  setJobCardTemplates(updatedTemplates);
+                                }}
                               >
                                 <FontAwesomeIcon icon={faTrash} />
                               </button>
@@ -160,7 +169,11 @@ function Home() {
                     <button
                       className="btn btn-primary"
                       type="button"
-                      onClick={handleAddField}
+                      onClick={() => {
+                        const updatedTemplates = [...jobCardTemplates];
+                        updatedTemplates[index].fields.push({ field: '', type: '' });
+                        setJobCardTemplates(updatedTemplates);
+                      }}
                     >
                       Add Field
                     </button>
@@ -171,14 +184,14 @@ function Home() {
                 <button
                   type="button"
                   className="btn btn-danger"
-                  onClick={handleResetFields}
+                  onClick={() => handleRemoveTemplate(index)}
                 >
-                  Reset
+                  Remove Template
                 </button>
                 <button
                   type="button"
                   className="btn btn-success"
-                  onClick={handleSaveTemplate}
+                  onClick={() => handleSaveTemplate(index)}
                 >
                   Save Template
                 </button>
@@ -186,28 +199,32 @@ function Home() {
             </div>
           </div>
         </div>
-      )}
+      ))}
 
-      {showTable && (
+      {showTable && jobCardTemplates.length > 0 && (
         <div className="container mt-4">
-          <h4>Saved Template:</h4>
-          <h6>Template Name :  {templateName}</h6>
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>Field</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {fields.map((field, index) => (
-                <tr key={index}>
-                  <td>{field.field}</td>
-                  <td>{field.type}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <h4>Saved Templates:</h4>
+          {jobCardTemplates.map((jobCardTemplate, index) => (
+            <div key={index}>
+              <h6>Template Name: {jobCardTemplate.templateName}</h6>
+              <table className="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Field</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {jobCardTemplate.fields.map((field, fieldIndex) => (
+                    <tr key={fieldIndex}>
+                      <td>{field.field}</td>
+                      <td>{field.type}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
         </div>
       )}
 
