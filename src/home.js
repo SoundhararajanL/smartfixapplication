@@ -46,6 +46,10 @@ function Home() {
           autoClose: 1000,
         });
         setShowTable(true);
+        setTimeout(() => {
+          setShowTable(false);
+          setJobCardTemplates([]);
+        }, 1000);
       })
       .catch((error) => {
         console.error(error);
