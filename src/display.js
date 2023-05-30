@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Home from './home';
 
 const TemplateList = () => {
   const [templateNames, setTemplateNames] = useState([]);
+  const [selectedTemplateName, setSelectedTemplateName] = useState(null);
 
   useEffect(() => {
     fetchTemplateNames();
@@ -25,6 +28,28 @@ const TemplateList = () => {
       });
   };
 
+  const handleTemplateNameClick = (templateName) => {
+    setSelectedTemplateName(templateName);
+  };
+
+  const renderAdditionalFields = () => {
+    if (selectedTemplateName) {
+      return (
+        <div>
+          <label htmlFor="field">Label Name:</label>
+          <input type="text" id="field" />
+
+          <select>
+            <option value="text">Text</option>
+            <option value="date">Date</option>
+            <option value="number">Number</option>
+          </select>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div>
       <div>
@@ -33,9 +58,18 @@ const TemplateList = () => {
       <h1>Template Names</h1>
       <ul>
         {templateNames.map(template => (
-          <li key={template._id}>{template.templateName}</li>
+          <li key={template._id}>
+            <span >{template.templateName}</span>
+            <span
+              className="icon"
+              onClick={() => handleTemplateNameClick(template.templateName)}
+            >
+              <FontAwesomeIcon icon={faPlus} />
+            </span>
+          </li>
         ))}
       </ul>
+      {renderAdditionalFields()}
     </div>
   );
 };
