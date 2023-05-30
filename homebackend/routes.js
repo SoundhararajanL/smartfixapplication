@@ -5,16 +5,23 @@ const Template = require('./schema');
 // Save template route
 router.post('/', async (req, res) => {
   try {
-    const { templateName, fields } = req.body;
+    const { templateName, field } = req.body;
 
-    const template = new Template({
-      templateName,
-      fields,
-    });
+    const template = await Template.findOne({ templateName });
 
-    const savedTemplate = await template.save();
+    if (template) {
+      template.fields.push(field);
+      await template.save();
+      res.status(200).json(template.fields);
+    } else {
+      const newTemplate = new Template({
+        templateName,
+        fields: [field],
+      });
 
-    res.status(200).json(savedTemplate.fields);
+      const savedTemplate = await newTemplate.save();
+      res.status(200).json(savedTemplate.fields);
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error occurred while saving template data!' });

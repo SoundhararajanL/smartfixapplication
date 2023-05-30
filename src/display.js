@@ -3,10 +3,14 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Home from './home';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TemplateList = () => {
   const [templateNames, setTemplateNames] = useState([]);
   const [selectedTemplateName, setSelectedTemplateName] = useState(null);
+  const [fieldName, setFieldName] = useState('');
+  const [fieldType, setFieldType] = useState('text');
 
   useEffect(() => {
     fetchTemplateNames();
@@ -19,11 +23,12 @@ const TemplateList = () => {
   }, []);
 
   const fetchTemplateNames = () => {
-    axios.get('http://localhost:3000/HomeData')
-      .then(response => {
+    axios
+      .get('http://localhost:3000/HomeData')
+      .then((response) => {
         setTemplateNames(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error fetching template names:', error);
       });
   };
@@ -32,18 +37,59 @@ const TemplateList = () => {
     setSelectedTemplateName(templateName);
   };
 
+  const handleFieldNameChange = (event) => {
+    setFieldName(event.target.value);
+  };
+
+  const handleFieldTypeChange = (event) => {
+    setFieldType(event.target.value);
+  };
+
+  const handleSaveField = () => {
+    const newField = {
+      field: fieldName,
+      type: fieldType,
+    };
+
+    axios
+      .post('http://localhost:3000/HomeData', {
+        templateName: selectedTemplateName,
+        field: newField,
+      })
+      .then((response) => {
+        console.log('Field saved successfully:', response.data);
+        // Clear the field name and type
+        setFieldName('');
+        setFieldType('text');
+        // Refresh the template names
+        fetchTemplateNames();
+      })
+      .catch((error) => {
+        console.error('Error saving field:', error);
+      });
+  };
+
   const renderAdditionalFields = () => {
     if (selectedTemplateName) {
       return (
         <div>
-          <label htmlFor="field">Label Name:</label>
-          <input type="text" id="field" />
+          <label htmlFor="fieldName">Field Name:</label>
+          <input
+            type="text"
+            id="fieldName"
+            placeholder="Field Name"
+            value={fieldName}
+            onChange={handleFieldNameChange}
+          />
 
-          <select>
+          <label htmlFor="fieldType">Field Type:</label>
+          <select id="fieldType" value={fieldType} onChange={handleFieldTypeChange}>
             <option value="text">Text</option>
             <option value="date">Date</option>
             <option value="number">Number</option>
           </select>
+
+          <button onClick={handleSaveField}>Save Field</button>
         </div>
       );
     }
@@ -52,14 +98,15 @@ const TemplateList = () => {
 
   return (
     <div>
+      <ToastContainer /> {/* ToastContainer for displaying notifications */}
       <div>
         <Home />
       </div>
       <h1>Template Names</h1>
       <ul>
-        {templateNames.map(template => (
+        {templateNames.map((template) => (
           <li key={template._id}>
-            <span >{template.templateName}</span>
+            <span>{template.templateName}</span>
             <span
               className="icon"
               onClick={() => handleTemplateNameClick(template.templateName)}
