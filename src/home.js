@@ -8,7 +8,7 @@ import './App.css';
 import axios from 'axios';
 
 function Home() {
-  const defaultFields = [{ field: '', type: 'select' }];
+  const defaultFields = [{ field: '', type: '' }];
 
   const [jobCardTemplates, setJobCardTemplates] = useState([]);
   const [showTable, setShowTable] = useState(false);
@@ -20,8 +20,18 @@ function Home() {
   const handleSaveTemplate = (index) => {
     const template = jobCardTemplates[index];
 
+    // Check if the template name is filled
+    if (template.templateName.trim() === '') {
+      toast.error('Please enter a template name.', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return; // Stop execution if the template name is empty
+    }
+
     // Check if any required fields are empty
-    const hasEmptyFields = template.fields.some((field) => field.field === '' || field.type === '');
+    const hasEmptyFields = template.fields.some(
+      (field) => field.field === '' || field.type === ''
+    );
 
     if (hasEmptyFields) {
       toast.error('Please fill in all required fields.', {
@@ -152,7 +162,7 @@ function Home() {
                                   setJobCardTemplates(updatedTemplates);
                                 }}
                               >
-                                <option value="" selected hidden>
+                                <option value="" hidden selected>
                                   -- Select --
                                 </option>
                                 <option value="text">Text</option>
@@ -210,6 +220,7 @@ function Home() {
                   type="button"
                   className="btn btn-success"
                   onClick={() => handleSaveTemplate(0)}
+                  disabled={jobCardTemplate.fields.length === 0}
                 >
                   Save Template
                 </button>
