@@ -7,15 +7,18 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Signup from './signup';
 import Login from './login';
 import Home from './home';
+import TemplateList from './display';
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
   
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login />} /> 
         <Route path="/home" element={<Home />} />
+        <Route path='/display' element={<TemplateList />} />
       </Routes>
     </BrowserRouter>
 );

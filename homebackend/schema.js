@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const schema = new mongoose.Schema({
+const templateSchema = new mongoose.Schema({
   templateName: {
     type: String,
     required: true,
@@ -15,9 +15,8 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      
     },
   ],
 });
 
-module.exports = mongoose.model('Template', schema);
+module.exports = mongoose.model('Template', templateSchema);

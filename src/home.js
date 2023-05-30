@@ -6,12 +6,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import './App.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const defaultFields = [{ field: '', type: '' }];
 
   const [jobCardTemplates, setJobCardTemplates] = useState([]);
   const [showTable, setShowTable] = useState(false);
+  const navigate = useNavigate();
 
   const handleAddTemplate = () => {
     setJobCardTemplates([{ templateName: '', fields: [...defaultFields] }]);
@@ -54,6 +56,9 @@ function Home() {
         toast.success('Template saved successfully!', {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 1000,
+          onClose: () => {
+            navigate('/display', { state: { loginSuccess: true } });
+          }
         });
         setShowTable(true);
         setTimeout(() => {
