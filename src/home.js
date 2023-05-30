@@ -8,11 +8,13 @@ import './App.css';
 import axios from 'axios';
 
 function Home() {
+  const defaultFields = [{ field: '', type: 'select' }];
+
   const [jobCardTemplates, setJobCardTemplates] = useState([]);
   const [showTable, setShowTable] = useState(false);
 
   const handleAddTemplate = () => {
-    setJobCardTemplates([...jobCardTemplates, { templateName: '', fields: [{ field: '', type: 'select' }] }]);
+    setJobCardTemplates([{ templateName: '', fields: [...defaultFields] }]);
   };
 
   const handleSaveTemplate = (index) => {
@@ -59,25 +61,28 @@ function Home() {
     setJobCardTemplates(updatedTemplates);
   };
 
+  const handleResetFields = (index) => {
+    const updatedTemplates = [...jobCardTemplates];
+    updatedTemplates[index].fields = [...defaultFields];
+    setJobCardTemplates(updatedTemplates);
+  };
+
+  const jobCardTemplate = jobCardTemplates[0];
+
   return (
     <div>
       <div className="container mt-4">
         <div className="text-center mb-4">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleAddTemplate}
-          >
+          <button type="button" className="btn btn-primary" onClick={handleAddTemplate}>
             Create Job Card Template
           </button>
         </div>
       </div>
 
-      {jobCardTemplates.map((jobCardTemplate, index) => (
+      {jobCardTemplate && (
         <div
-          key={index}
           className="card text-center"
-          id={`exampleModalCenter-${index}`}
+          id={`exampleModalCenter-${0}`}
           tabIndex="-1"
           role="dialog"
         >
@@ -89,7 +94,7 @@ function Home() {
               <div className="card-body">
                 <form>
                   <div className="card-text">
-                    <label className="card-title" htmlFor={`templateName-${index}`}>
+                    <label className="card-title" htmlFor={`templateName-${0}`}>
                       Template Name
                     </label>
                     <input
@@ -99,14 +104,14 @@ function Home() {
                       value={jobCardTemplate.templateName}
                       onChange={(e) => {
                         const updatedTemplates = [...jobCardTemplates];
-                        updatedTemplates[index].templateName = e.target.value;
+                        updatedTemplates[0].templateName = e.target.value;
                         setJobCardTemplates(updatedTemplates);
                       }}
                       style={{ width: '200px' }} // Adjust the width as needed
-                      id={`templateName-${index}`}
+                      id={`templateName-${0}`}
                     />
 
-                    <label className="card-title mt-3" htmlFor={`fields-${index}`}>
+                    <label className="card-title mt-3" htmlFor={`fields-${0}`}>
                       Fields
                     </label>
                     <table className="table table-bordered">
@@ -128,7 +133,7 @@ function Home() {
                                 value={field.field}
                                 onChange={(e) => {
                                   const updatedTemplates = [...jobCardTemplates];
-                                  updatedTemplates[index].fields[fieldIndex].field = e.target.value;
+                                  updatedTemplates[0].fields[fieldIndex].field = e.target.value;
                                   setJobCardTemplates(updatedTemplates);
                                 }}
                               />
@@ -139,11 +144,13 @@ function Home() {
                                 value={field.type}
                                 onChange={(e) => {
                                   const updatedTemplates = [...jobCardTemplates];
-                                  updatedTemplates[index].fields[fieldIndex].type = e.target.value;
+                                  updatedTemplates[0].fields[fieldIndex].type = e.target.value;
                                   setJobCardTemplates(updatedTemplates);
                                 }}
                               >
-                                <option value="">-- Select --</option>
+                                <option value="" selected hidden>
+                                  -- Select --
+                                </option>
                                 <option value="text">Text</option>
                                 <option value="email">Date</option>
                                 <option value="number">Number</option>
@@ -155,7 +162,7 @@ function Home() {
                                 className="btn btn-danger btn-sm"
                                 onClick={() => {
                                   const updatedTemplates = [...jobCardTemplates];
-                                  updatedTemplates[index].fields.splice(fieldIndex, 1);
+                                  updatedTemplates[0].fields.splice(fieldIndex, 1);
                                   setJobCardTemplates(updatedTemplates);
                                 }}
                               >
@@ -171,7 +178,7 @@ function Home() {
                       type="button"
                       onClick={() => {
                         const updatedTemplates = [...jobCardTemplates];
-                        updatedTemplates[index].fields.push({ field: '', type: '' });
+                        updatedTemplates[0].fields.push({ field: '', type: '' });
                         setJobCardTemplates(updatedTemplates);
                       }}
                     >
@@ -184,47 +191,27 @@ function Home() {
                 <button
                   type="button"
                   className="btn btn-danger"
-                  onClick={() => handleRemoveTemplate(index)}
+                  onClick={() => handleRemoveTemplate(0)}
                 >
                   Remove Template
                 </button>
                 <button
                   type="button"
+                  className="btn btn-secondary"
+                  onClick={() => handleResetFields(0)}
+                >
+                  Reset Fields
+                </button>
+                <button
+                  type="button"
                   className="btn btn-success"
-                  onClick={() => handleSaveTemplate(index)}
+                  onClick={() => handleSaveTemplate(0)}
                 >
                   Save Template
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      ))}
-
-      {showTable && jobCardTemplates.length > 0 && (
-        <div className="container mt-4">
-          <h4>Saved Templates:</h4>
-          {jobCardTemplates.map((jobCardTemplate, index) => (
-            <div key={index}>
-              <h6>Template Name: {jobCardTemplate.templateName}</h6>
-              <table className="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Field</th>
-                    <th>Type</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {jobCardTemplate.fields.map((field, fieldIndex) => (
-                    <tr key={fieldIndex}>
-                      <td>{field.field}</td>
-                      <td>{field.type}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ))}
         </div>
       )}
 
