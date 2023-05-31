@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const FormPage = () => {
   const [templateNames, setTemplateNames] = useState([]);
@@ -69,6 +70,9 @@ const FormPage = () => {
   return (
     <div>
       <h1>Template Names</h1>
+      <div>
+        <Link to="/display"><button type="button" class="btn btn-outline-primary">Back</button></Link>
+      </div>
       <ul>
         {templateNames.map((template) => (
           <li key={template._id}>

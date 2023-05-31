@@ -5,6 +5,8 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Home from './home';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link, useNavigate } from 'react-router-dom';
+
 
 const TemplateList = () => {
   const [templateNames, setTemplateNames] = useState([]);
@@ -107,7 +109,11 @@ const TemplateList = () => {
       <ToastContainer /> {/* ToastContainer for displaying notifications */}
       <div>
         <Home />
+        <div>
+        <Link to="/form"><button type="button" class="btn btn-warning">Form</button></Link>
+        </div>
       </div>
+
       <h1>Template Names</h1>
       <ul>
         {templateNames.map((template) => (
