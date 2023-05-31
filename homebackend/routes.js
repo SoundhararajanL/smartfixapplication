@@ -3,33 +3,37 @@ const router = express.Router();
 const Template = require('./schema');
 
 // Save template route
-router.post('/', async (req, res) => {
+router.post('/post', async (req, res) => {
   try {
-    const { templateName, field } = req.body;
+    const { templateName, fields } = req.body;
 
-    const template = await Template.findOne({ templateName });
+    // Find the existing template by name
+    const existingTemplate = await Template.findOne({ templateName });
 
-    if (template) {
-      template.fields.push(field);
-      await template.save();
-      res.status(200).json(template.fields);
+    if (existingTemplate) {
+      // Template already exists, add the new fields to the existing fields
+      existingTemplate.fields.push(...fields);
+      const updatedTemplate = await existingTemplate.save();
+      res.status(200).json(updatedTemplate.fields);
     } else {
-      const newTemplate = new Template({
+      // Template doesn't exist, create a new template
+      const template = new Template({
         templateName,
-        fields: [field],
+        fields,
       });
 
-      const savedTemplate = await newTemplate.save();
+      const savedTemplate = await template.save();
       res.status(200).json(savedTemplate.fields);
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error occurred while saving template data!' });
+    res.status(500).json({ error: 'Error occurred while saving/updating template data!' });
   }
 });
 
+
 // Fetch template names route
-router.get('/', async (req, res) => {
+router.get('/get', async (req, res) => {
   try {
     const templates = await Template.find({}, 'templateName');
     res.status(200).json(templates);

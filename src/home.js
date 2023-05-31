@@ -11,9 +11,9 @@ import { useNavigate } from 'react-router-dom';
 function Home() {
   const defaultFields = [{ field: '', type: '' }];
 
+  const navigate = useNavigate();
   const [jobCardTemplates, setJobCardTemplates] = useState([]);
   const [showTable, setShowTable] = useState(false);
-  const navigate = useNavigate();
 
   const handleAddTemplate = () => {
     setJobCardTemplates([{ templateName: '', fields: [...defaultFields] }]);
@@ -51,7 +51,7 @@ function Home() {
     };
 
     axios
-      .post('http://localhost:3000/HomeData', templateData)
+      .post('http://localhost:3000/post', templateData)
       .then((response) => {
         toast.success('Template saved successfully!', {
           position: toast.POSITION.TOP_CENTER,
@@ -59,6 +59,7 @@ function Home() {
           onClose: () => {
             navigate('/display', { state: { loginSuccess: true } });
           }
+
         });
         setShowTable(true);
         setTimeout(() => {

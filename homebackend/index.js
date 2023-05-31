@@ -12,7 +12,7 @@ app.use(cors());
 
 // Router
 const routes = require('./routes');
-app.use('/HomeData', routes);
+app.use('/', routes); // Updated route path
 
 // Start the server
 const PORT = process.env.PORT || 3000;
@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 3000;
 mongoose
   .connect(process.env.MYDB_CONNECTION, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log('DB connected successfully');

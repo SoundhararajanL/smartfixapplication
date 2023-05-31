@@ -24,7 +24,7 @@ const TemplateList = () => {
 
   const fetchTemplateNames = () => {
     axios
-      .get('http://localhost:3000/HomeData')
+      .get('http://localhost:3000/get')
       .then((response) => {
         setTemplateNames(response.data);
       })
@@ -46,18 +46,24 @@ const TemplateList = () => {
   };
 
   const handleSaveField = () => {
+    if (!selectedTemplateName) {
+      return; // No template selected, do nothing
+    }
+
     const newField = {
       field: fieldName,
       type: fieldType,
     };
 
+    const templateData = {
+      templateName: selectedTemplateName,
+      fields: [newField],
+    };
+
     axios
-      .post('http://localhost:3000/HomeData', {
-        templateName: selectedTemplateName,
-        field: newField,
-      })
+      .post('http://localhost:3000/post', templateData)
       .then((response) => {
-        console.log('Field saved successfully:', response.data);
+        console.log('Field saved/updated successfully:', response.data);
         // Clear the field name and type
         setFieldName('');
         setFieldType('text');
@@ -65,7 +71,7 @@ const TemplateList = () => {
         fetchTemplateNames();
       })
       .catch((error) => {
-        console.error('Error saving field:', error);
+        console.error('Error saving/updating field:', error);
       });
   };
 
