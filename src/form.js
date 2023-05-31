@@ -54,7 +54,7 @@ const FormPage = () => {
       axios
         .post('http://localhost:3000/post', {
           templateName: selectedTemplate,
-          fields: Object.entries(formValues).map(([field, value]) => ({ field, value })),
+          fields: [...fields, ...Object.entries(formValues).map(([field, value]) => ({ field, value }))],
         })
         .then((response) => {
           console.log('Form data submitted successfully:', response.data);
@@ -91,11 +91,12 @@ const FormPage = () => {
                   type={field.type}
                   id={field.field}
                   name={field.field}
-                  value={formValues[field.field] || ''}
+                  value={formValues[field.field] !== undefined ? formValues[field.field] : ''}
                   onChange={handleInputChange}
                 />
               </div>
             ))}
+
             <button type="submit">Submit</button>
           </form>
         </div>

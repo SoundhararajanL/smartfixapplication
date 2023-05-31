@@ -61,7 +61,7 @@ const TemplateList = () => {
     };
 
     axios
-      .post('http://localhost:3000/post', templateData)
+      .post('http://localhost:3000/store', templateData)
       .then((response) => {
         console.log('Field saved/updated successfully:', response.data);
         // Clear the field name and type
