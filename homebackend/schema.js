@@ -15,6 +15,9 @@ const templateSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
+      value: {
+        type: String,
+      },
     },
   ],
 });

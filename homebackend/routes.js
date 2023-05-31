@@ -11,8 +11,16 @@ router.post('/post', async (req, res) => {
     const existingTemplate = await Template.findOne({ templateName });
 
     if (existingTemplate) {
-      // Template already exists, add the new fields to the existing fields
-      existingTemplate.fields.push(...fields);
+      // Template already exists, update the field values
+      fields.forEach(({ field, value }) => {
+        const existingField = existingTemplate.fields.find((f) => f.field === field);
+        if (existingField) {
+          existingField.value = value;
+        } else {
+          existingTemplate.fields.push({ field, value });
+        }
+      });
+
       const updatedTemplate = await existingTemplate.save();
       res.status(200).json(updatedTemplate.fields);
     } else {
@@ -31,7 +39,6 @@ router.post('/post', async (req, res) => {
   }
 });
 
-
 // Fetch template names route
 router.get('/get', async (req, res) => {
   try {
@@ -40,6 +47,23 @@ router.get('/get', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error occurred while fetching template names!' });
+  }
+});
+
+// Fetch template fields route
+router.get('/getFields/:templateId', async (req, res) => {
+  try {
+    const { templateId } = req.params;
+
+    const template = await Template.findById(templateId, 'fields');
+    if (template) {
+      res.status(200).json(template.fields);
+    } else {
+      res.status(404).json({ error: 'Template not found!' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error occurred while fetching template fields!' });
   }
 });
 
