@@ -49,6 +49,23 @@ router.get('/getFields/:templateId', async (req, res) => {
   }
 });
 
+// Route to fetch fields and types for a specific template
+router.get('/template/:templateName', async (req, res) => {
+  const { templateName } = req.params;
+
+  try {
+    const template = await Template.findOne({ templateName });
+    if (!template) {
+      return res.status(404).json({ error: 'Template not found' });
+    }
+
+    const { fields } = template;
+    res.json({ fields });
+  } catch (error) {
+    console.error('Error fetching template:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 // Delete template route
@@ -87,5 +104,33 @@ router.post('/form', async (req, res) => {
     res.status(500).json({ error: 'Error occurred while saving form data!' });
   }
 });
+
+
+// Update template route
+router.put('/template/:templateName', async (req, res) => {
+  const { templateName } = req.params;
+  const { fields } = req.body;
+
+  try {
+    // Find the template by name
+    const template = await Template.findOne({ templateName });
+
+    if (!template) {
+      return res.status(404).json({ error: 'Template not found' });
+    }
+
+    // Update the fields
+    template.fields = fields;
+
+    // Save the updated template
+    await template.save();
+
+    res.json({ message: 'Template updated successfully' });
+  } catch (error) {
+    console.error('Error updating template:', error);
+    res.status(500).json({ error: 'Failed to update template' });
+  }
+});
+
 
 module.exports = router;

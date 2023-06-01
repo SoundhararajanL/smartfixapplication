@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 import Home from './home';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link, useNavigate } from 'react-router-dom';
-
+import { Link } from 'react-router-dom';
 
 const TemplateList = () => {
   const [templateNames, setTemplateNames] = useState([]);
   const [selectedTemplateName, setSelectedTemplateName] = useState(null);
-  const [fieldName, setFieldName] = useState('');
-  const [fieldType, setFieldType] = useState('text');
+  const [templateFields, setTemplateFields] = useState([]);
+  const [editingFields, setEditingFields] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     fetchTemplateNames();
@@ -24,80 +24,106 @@ const TemplateList = () => {
     };
   }, []);
 
-  const fetchTemplateNames = () => {
-    axios
-      .get('http://localhost:3000/get')
-      .then((response) => {
-        setTemplateNames(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching template names:', error);
-      });
-  };
-
-  const handleTemplateNameClick = (templateName) => {
-    setSelectedTemplateName(templateName);
-  };
-
-  const handleFieldNameChange = (event) => {
-    setFieldName(event.target.value);
-  };
-
-  const handleFieldTypeChange = (event) => {
-    setFieldType(event.target.value);
-  };
-
-  const handleSaveField = () => {
-    if (!selectedTemplateName) {
-      return; // No template selected, do nothing
+  const fetchTemplateNames = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/get');
+      setTemplateNames(response.data);
+    } catch (error) {
+      console.error('Error fetching template names:', error);
     }
-
-    const newField = {
-      field: fieldName,
-      type: fieldType,
-    };
-
-    const templateData = {
-      templateName: selectedTemplateName,
-      fields: [newField],
-    };
-
-    axios
-      .post('http://localhost:3000/store', templateData)
-      .then((response) => {
-        console.log('Field saved/updated successfully:', response.data);
-        // Clear the field name and type
-        setFieldName('');
-        setFieldType('text');
-        // Refresh the template names
-        fetchTemplateNames();
-      })
-      .catch((error) => {
-        console.error('Error saving/updating field:', error);
-      });
   };
 
-  const renderAdditionalFields = () => {
+  const handleTemplateNameClick = async (templateName) => {
+    setSelectedTemplateName(templateName);
+
+    try {
+      const response = await axios.get(`http://localhost:3000/template/${templateName}`);
+      setTemplateFields(response.data.fields);
+      setEditingFields(response.data.fields);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error fetching template fields:', error);
+    }
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleFieldChange = (index, field, value) => {
+    const updatedFields = [...editingFields];
+    updatedFields[index][field] = value;
+    setEditingFields(updatedFields);
+  };
+
+  const handleSaveClick = async () => {
+    try {
+      await axios.put(`http://localhost:3000/template/${selectedTemplateName}`, {
+        fields: editingFields,
+      });
+      toast.success('Template updated successfully');
+      setIsEditing(false);
+      setTemplateFields([...editingFields]);
+    } catch (error) {
+      console.error('Error updating template:', error);
+      toast.error('Failed to update template');
+    }
+  };
+
+  const renderTemplateFields = () => {
     if (selectedTemplateName) {
       return (
-        <div>
-          <label htmlFor="fieldName">Field Name:</label>
-          <input
-            type="text"
-            id="fieldName"
-            placeholder="Field Name"
-            value={fieldName}
-            onChange={handleFieldNameChange}
-          />
-
-          <label htmlFor="fieldType">Field Type:</label>
-          <select id="fieldType" value={fieldType} onChange={handleFieldTypeChange}>
-            <option value="text">Text</option>
-            <option value="date">Date</option>
-            <option value="number">Number</option>
-          </select>
-
-          <button onClick={handleSaveField}>Save Field</button>
+        <div className="container mt-4">
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <h4>Template: {selectedTemplateName}</h4>
+            {isEditing ? (
+              <button className="btn btn-primary" onClick={handleSaveClick}>
+                <FontAwesomeIcon icon={faSave} /> Save Template
+              </button>
+            ) : (
+              <FontAwesomeIcon icon={faEdit} onClick={handleEditClick} />
+            )}
+          </div>
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              {isEditing ? (
+                editingFields.map((field, index) => (
+                  <tr key={index}>
+                    <td>
+                      <input
+                        type="text"
+                        value={field.field}
+                        onChange={(e) => handleFieldChange(index, 'field', e.target.value)}
+                      />
+                    </td>
+                    <td>
+                      <select
+                        value={field.type}
+                        onChange={(e) => handleFieldChange(index, 'type', e.target.value)}
+                      >
+                        <option value="text">Text</option>
+                        <option value="number">Number</option>
+                        <option value="date">Date</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                templateFields.map((field, index) => (
+                  <tr key={index}>
+                    <td>{field.field}</td>
+                    <td>{field.type}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       );
     }
@@ -106,11 +132,15 @@ const TemplateList = () => {
 
   return (
     <div>
-      <ToastContainer /> {/* ToastContainer for displaying notifications */}
+      <ToastContainer />
       <div>
         <Home />
         <div>
-        <Link to="/form"><button type="button" class="btn btn-warning">Form</button></Link>
+          <Link to="/form">
+            <button type="button" className="btn btn-warning">
+              Form
+            </button>
+          </Link>
         </div>
       </div>
 
@@ -119,16 +149,13 @@ const TemplateList = () => {
         {templateNames.map((template) => (
           <li key={template._id}>
             <span>{template.templateName}</span>
-            <span
-              className="icon"
-              onClick={() => handleTemplateNameClick(template.templateName)}
-            >
+            <span className="icon" onClick={() => handleTemplateNameClick(template.templateName)}>
               <FontAwesomeIcon icon={faPlus} />
             </span>
           </li>
         ))}
       </ul>
-      {renderAdditionalFields()}
+      {renderTemplateFields()}
     </div>
   );
 };
