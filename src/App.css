@@ -243,3 +243,6 @@ input[type="password"] {
   margin-left: 10px;
 }
 
+.delete-button {
+  color: red;
+}

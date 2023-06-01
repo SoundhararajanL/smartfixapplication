@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import './App.css'
 
 const FormPage = () => {
   const [templateNames, setTemplateNames] = useState([]);
@@ -67,11 +70,28 @@ const FormPage = () => {
     }
   };
 
+  const handleDeleteTemplate = (templateName) => {
+    axios
+      .delete(`http://localhost:3000/delete/${templateName}`)
+      .then((response) => {
+        console.log('Template deleted successfully:', response.data);
+        // Refresh the template names
+        fetchTemplateNames();
+      })
+      .catch((error) => {
+        console.error('Error deleting template:', error);
+      });
+  };
+
   return (
     <div>
       <h1>Template Names</h1>
       <div>
-        <Link to="/display"><button type="button" class="btn btn-outline-primary">Back</button></Link>
+        <Link to="/display">
+          <button type="button" className="btn btn-outline-primary">
+            Back
+          </button>
+        </Link>
       </div>
       <ul>
         {templateNames.map((template) => (
@@ -79,6 +99,9 @@ const FormPage = () => {
             {template.templateName}
             <button onClick={() => handleSelectChange(template._id, template.templateName)}>
               Select Form
+            </button>
+            <button onClick={() => handleDeleteTemplate(template.templateName)} className="delete-icon ">
+              <FontAwesomeIcon icon={faTrash} />
             </button>
           </li>
         ))}

@@ -8,11 +8,11 @@ function App() {
   return (
    <div>
      {/* <Login /> */}
-     {/* < Home /> */}
+     < Home />
      {/* <TemplateList /> */}
-     <FormPage /> 
+     {/* <FormPage />  */}
     </div>
   );
 }
-
+ 
 export default App;

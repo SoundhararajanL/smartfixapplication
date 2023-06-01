@@ -96,4 +96,23 @@ router.post('/store', async (req, res) => {
   }
 });
 
+// Delete template route
+router.delete('/delete/:templateName', async (req, res) => {
+  try {
+    const { templateName } = req.params;
+
+    // Find the template by name and delete it
+    const deletedTemplate = await Template.findOneAndDelete({ templateName });
+
+    if (deletedTemplate) {
+      res.status(200).json({ message: 'Template deleted successfully!' });
+    } else {
+      res.status(404).json({ error: 'Template not found!' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error occurred while deleting template!' });
+  }
+});
+
 module.exports = router;
