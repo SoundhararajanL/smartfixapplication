@@ -1,41 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const Template = require('./schema');
+const Form = require("./formSchema")
 
-// Save template route
-router.post('/post', async (req, res) => {
+router.post('/home', async (req, res) => {
   try {
     const { templateName, fields } = req.body;
 
-    // Find the existing template by name
-    const existingTemplate = await Template.findOne({ templateName });
+    const template = new Template({
+      templateName,
+      fields,
+    });
 
-    if (existingTemplate) {
-      // Template already exists, update the field values
-      fields.forEach(({ field, value }) => {
-        const existingField = existingTemplate.fields.find((f) => f.field === field);
-        if (existingField) {
-          existingField.value = value;
-        } else {
-          existingTemplate.fields.push({ field, value });
-        }
-      });
+    const savedTemplate = await template.save();
 
-      const updatedTemplate = await existingTemplate.save();
-      res.status(200).json(updatedTemplate.fields);
-    } else {
-      // Template doesn't exist, create a new template
-      const template = new Template({
-        templateName,
-        fields,
-      });
-
-      const savedTemplate = await template.save();
-      res.status(200).json(savedTemplate.fields);
-    }
+    res.status(200).json(savedTemplate.fields);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error occurred while saving/updating template data!' });
+    res.status(500).json({ error: 'Error occurred while saving template data!' });
   }
 });
 
@@ -68,33 +50,6 @@ router.get('/getFields/:templateId', async (req, res) => {
 });
 
 
-router.post('/store', async (req, res) => {
-  try {
-    const { templateName, fields } = req.body;
-
-    // Find the existing template by name
-    const existingTemplate = await Template.findOne({ templateName });
-
-    if (existingTemplate) {
-      // Template already exists, add the new fields to the existing fields
-      existingTemplate.fields.push(...fields);
-      const updatedTemplate = await existingTemplate.save();
-      res.status(200).json(updatedTemplate.fields);
-    } else {
-      // Template doesn't exist, create a new template
-      const template = new Template({
-        templateName,
-        fields,
-      });
-
-      const savedTemplate = await template.save();
-      res.status(200).json(savedTemplate.fields);
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error occurred while saving/updating template data!' });
-  }
-});
 
 // Delete template route
 router.delete('/delete/:templateName', async (req, res) => {
@@ -112,6 +67,24 @@ router.delete('/delete/:templateName', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error occurred while deleting template!' });
+  }
+});
+
+// Save template route
+router.post('/form', async (req, res) => {
+  try {
+    const { templateName, fields } = req.body;
+
+    const form = new Form({
+      templateName,
+      fields,
+    });
+
+    const savedForm = await form.save();
+    res.status(200).json(savedForm);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error occurred while saving form data!' });
   }
 });
 

@@ -56,9 +56,9 @@ const FormPage = () => {
     event.preventDefault();
     if (selectedTemplate) {
       axios
-        .post('http://localhost:3000/post', {
+        .post('http://localhost:3000/form', {
           templateName: selectedTemplate,
-          fields: [...fields, ...Object.entries(formValues).map(([field, value]) => ({ field, value }))],
+          fields: Object.entries(formValues).map(([field, value]) => ({ field, value })),
         })
         .then((response) => {
           console.log('Form data submitted successfully:', response.data);

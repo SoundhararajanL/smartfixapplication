@@ -51,7 +51,7 @@ function Home() {
     };
 
     axios
-      .post('http://localhost:3000/post', templateData)
+      .post('http://localhost:3000/home', templateData)
       .then((response) => {
         toast.success('Template saved successfully!', {
           position: toast.POSITION.TOP_CENTER,

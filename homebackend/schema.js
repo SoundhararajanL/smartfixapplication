@@ -15,11 +15,10 @@ const templateSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      value: {
-        type: String,
-      },
+      
     },
   ],
 });
 
 module.exports = mongoose.model('Template', templateSchema);
+
