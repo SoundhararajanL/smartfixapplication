@@ -77,7 +77,6 @@ const TemplateList = () => {
     };
     setEditingFields((prevFields) => [...prevFields, { ...newField }]);
   };
-  
 
   const renderTemplateFields = () => {
     if (selectedTemplateName) {
@@ -131,35 +130,21 @@ const TemplateList = () => {
                   </tr>
                 ))
               )}
+              {/* {isEditing && (
+                // <tr>
+                //   <td colSpan="2">
+                //     <input
+                //       type="text"
+                //       placeholder="New Field"
+                //       value={editingFields[editingFields.length - 1].field}
+                //       onChange={(e) =>
+                //         handleFieldChange(editingFields.length - 1, 'field', e.target.value)
+                //       }
+                //     />
+                //   </td>
+                // </tr>
+              )} */}
             </tbody>
-            {isEditing && (
-              <tbody>
-                <tr>
-                  <td>
-                    <input
-                      type="text"
-                      placeholder="New Field"
-                      value={editingFields[editingFields.length - 1].field}
-                      onChange={(e) =>
-                        handleFieldChange(editingFields.length - 1, 'field', e.target.value)
-                      }
-                    />
-                  </td>
-                  <td>
-                    <select
-                      value={editingFields[editingFields.length - 1].type}
-                      onChange={(e) =>
-                        handleFieldChange(editingFields.length - 1, 'type', e.target.value)
-                      }
-                    >
-                      <option value="text">Text</option>
-                      <option value="number">Number</option>
-                      <option value="date">Date</option>
-                    </select>
-                  </td>
-                </tr>
-              </tbody>
-            )}
           </table>
           {isEditing && (
             <button className="btn btn-success" onClick={handleAddField}>
@@ -171,7 +156,6 @@ const TemplateList = () => {
     }
     return null;
   };
-  
 
   return (
     <div>
