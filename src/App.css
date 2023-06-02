@@ -246,3 +246,24 @@ input[type="password"] {
 .delete-button {
   color: red;
 }
+
+.p-3.mb-2.bg-success.text-white {
+  width: fit-content;
+  margin-left: 42%;
+  border-radius: 65px;
+  
+}
+.list-group{
+  padding-left: 32%;
+  margin-bottom: 0;
+  border-radius: var(--bs-list-group-border-radius);
+  margin-right: 39%;
+  margin-top: 4%;
+  margin-left: 38%;
+}
+.my-icon {
+  
+  font-size: 15px;
+  margin-left: 50%;
+  /* Add any additional styles you want */
+}

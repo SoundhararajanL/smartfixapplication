@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
+import {faUpRightAndDownLeftFromCenter, faPlus, faEdit, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Home from './home';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -57,6 +57,11 @@ const TemplateList = () => {
   };
 
   const handleSaveClick = async () => {
+    if (editingFields.length === 0) {
+      toast.error('At least one field is required');
+      return;
+    }
+
     try {
       await axios.put(`http://localhost:3000/template/${selectedTemplateName}`, {
         fields: editingFields,
@@ -78,6 +83,12 @@ const TemplateList = () => {
     setEditingFields((prevFields) => [...prevFields, { ...newField }]);
   };
 
+  const handleDeleteField = (index) => {
+    const updatedFields = [...editingFields];
+    updatedFields.splice(index, 1);
+    setEditingFields(updatedFields);
+  };
+
   const renderTemplateFields = () => {
     if (selectedTemplateName) {
       return (
@@ -92,11 +103,12 @@ const TemplateList = () => {
               <FontAwesomeIcon icon={faEdit} onClick={handleEditClick} />
             )}
           </div>
-          <table className="table table-bordered">
-            <thead>
+          <table className="table">
+            <thead className="thead-dark">
               <tr>
                 <th>Field</th>
                 <th>Type</th>
+                {isEditing && <th>Delete</th>}
               </tr>
             </thead>
             <tbody>
@@ -120,6 +132,11 @@ const TemplateList = () => {
                         <option value="date">Date</option>
                       </select>
                     </td>
+                    <td>
+                      <button className="btn btn-danger" onClick={() => handleDeleteField(index)}>
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -130,20 +147,6 @@ const TemplateList = () => {
                   </tr>
                 ))
               )}
-              {/* {isEditing && (
-                // <tr>
-                //   <td colSpan="2">
-                //     <input
-                //       type="text"
-                //       placeholder="New Field"
-                //       value={editingFields[editingFields.length - 1].field}
-                //       onChange={(e) =>
-                //         handleFieldChange(editingFields.length - 1, 'field', e.target.value)
-                //       }
-                //     />
-                //   </td>
-                // </tr>
-              )} */}
             </tbody>
           </table>
           {isEditing && (
@@ -171,13 +174,13 @@ const TemplateList = () => {
         </div>
       </div>
 
-      <h1>Template Names</h1>
-      <ul>
+      <h4 class="p-3 mb-2 bg-success text-white">Template Names</h4>
+      <ul class="list-group">
         {templateNames.map((template) => (
-          <li key={template._id}>
+          <li class="list-group-item list-group-item-primary" key={template._id}>
             <span>{template.templateName}</span>
             <span className="icon" onClick={() => handleTemplateNameClick(template.templateName)}>
-              <FontAwesomeIcon icon={faPlus} />
+            <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter}  className="my-icon" />
             </span>
           </li>
         ))}
