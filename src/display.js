@@ -174,7 +174,7 @@ const TemplateList = () => {
         </div>
       </div>
 
-      <h4 class="p-3 mb-2 bg-success text-white">Template Names</h4>
+      <h5 class="p-3 mb-2 bg-success text-white">Template Names</h5>
       <ul class="list-group">
         {templateNames.map((template) => (
           <li class="list-group-item list-group-item-primary" key={template._id}>

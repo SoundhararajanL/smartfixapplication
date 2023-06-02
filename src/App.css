@@ -213,7 +213,8 @@ input[type="password"] {
   padding: 10px;
   margin-bottom: 10px;
   background: transparent;
-  border: 1px solid #000000
+  border: 1px solid #000000;
+  margin-left: 6%;
 
 }
 .smaller-input {
@@ -266,4 +267,22 @@ input[type="password"] {
   font-size: 15px;
   margin-left: 50%;
   /* Add any additional styles you want */
+}
+
+
+/* new login */
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
+}
+.h-custom {
+height: calc(100% - 73px);
+}
+@media (max-width: 450px) {
+.h-custom {
+height: 100%;
+}
 }

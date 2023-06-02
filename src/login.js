@@ -4,13 +4,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import logo from './smartfix.png';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import login from './login.png';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  
+
 
   const handleLogin = () => {
     if (!username || !password) {
@@ -46,41 +47,74 @@ function Login() {
       });
   };
 
-  
+
 
   return (
     <div>
-      <div>
-        <div>
-          <img src={logo} className='login-image' alt='Logo' />
-          <div class="text-container">
-            <h2>
-              <p>SmartFix4.0</p>
-              <p>Here is the smartest way to make your fixtures intelligent!</p>
-            </h2>
-            <p>
-              SmartFix4.0 from Forms & Gears/ASM is the smartest way to transform your existing fixture/workholding into intelligent, IoT enabled, Industry 4.0 fixtures/workholdings. Talk to our experts and know how you can increase your productivity with lesser manpower.
-            </p>
-            <p>Call us now at +91 7823962010.</p>
-          </div>
-        </div>
-      </div>
 
-      <body>
-        <div className='login'>
-          <h1>User Login</h1>
-          <div>
-            <input type='text' name='username' placeholder='Username' onChange={(e) => setUsername(e.target.value.trim())} />
-            <input type='password' name='password' placeholder='Password' onChange={(e) => setPassword(e.target.value)} />
-            <button className='button-3' onClick={handleLogin}>Login</button>
+      <div>
+
+
+        <section class="vh-100">
+          <div class="container-fluid h-custom">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+              <div class="col-md-9 col-lg-6 col-xl-5">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                  class="img-fluid" alt="Sample image" />
+              </div>
+              <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <form>
+                  <p class="lead fw-normal mb-0 me-3">LOGIN</p>
+                  <div class="divider d-flex align-items-center my-4">
+
+                  </div>
+
+
+                  <div class="form-outline mb-4">
+                    <input type="email" id="form3Example3" class="form-control form-control-lg"
+                      onChange={(e) => setUsername(e.target.value.trim())}
+                      placeholder="Enter a User name" />
+
+                  </div>
+
+
+                  <div class="form-outline mb-3">
+                    <input type="password" id="form3Example4" class="form-control form-control-lg"
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter password" />
+
+                  </div>
+
+                  <div class="text-center text-lg-start mt-4 pt-2">
+                    <button type="button" class="btn btn-primary btn-lg"
+                      onClick={handleLogin}
+                    >Login</button>
+
+                    <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account?</p>
+                    <Link className='text' to='/signup'>
+                      <a href="#!"
+                        class="link-danger">Register</a></Link>
+                  </div>
+
+                </form>
+              </div>
+            </div>
           </div>
-          <div>
-            <Link className='text' to='/signup'><h5>Or sign Up Using</h5></Link>
+          <div
+            class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+            Smartfix 4.0
+            <div class="text-white mb-3 mb-md-0">
+              Copyright © 2023. All rights reserved.
+
+            </div>
+
           </div>
-        </div>
-      </body>
+        </section>
+      </div>
       <ToastContainer />
     </div>
+
+
   );
 }
 
