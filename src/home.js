@@ -92,7 +92,7 @@ function Home() {
   return (
     <div>
       <div className="container mt-4">
-        <div className="text-center mb-4">
+        <div  class="navbar navbar-dark bg-primary">
           <button type="button" className="btn btn-primary" onClick={handleAddTemplate}>
             Create Job Card Template
           </button>

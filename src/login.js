@@ -5,6 +5,8 @@ import logo from './smartfix.png';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import login from './login.png';
+import videoSource from './bg.mp4';
+
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -53,18 +55,19 @@ function Login() {
     <div>
 
       <div>
-
+      <div className="video-background">
+      <video autoPlay loop muted>
+        <source src={videoSource} type="video/mp4" />
+      </video>
+    </div>
 
         <section class="vh-100">
           <div class="container-fluid h-custom">
             <div class="row d-flex justify-content-center align-items-center h-100">
-              <div class="col-md-9 col-lg-6 col-xl-5">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-                  class="img-fluid" alt="Sample image" />
-              </div>
+              
               <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                 <form>
-                  <p class="lead fw-normal mb-0 me-3">LOGIN</p>
+                  <p style={{color:'white'}} class="lead fw-normal mb-0 me-3">LOGIN</p>
                   <div class="divider d-flex align-items-center my-4">
 
                   </div>
@@ -90,7 +93,7 @@ function Login() {
                       onClick={handleLogin}
                     >Login</button>
 
-                    <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account?</p>
+                    <p style={{color:'white'}} class="small fw-bold mt-2 pt-1 mb-0">Don't have an account?</p>
                     <Link className='text' to='/signup'>
                       <a href="#!"
                         class="link-danger">Register</a></Link>
@@ -101,10 +104,10 @@ function Login() {
             </div>
           </div>
           <div
-            class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
-            Smartfix 4.0
+           >
+            
             <div class="text-white mb-3 mb-md-0">
-              Copyright © 2023. All rights reserved.
+             
 
             </div>
 
