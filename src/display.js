@@ -174,17 +174,23 @@ const TemplateList = () => {
         </div>
       </div>
 
-      <h5 class="p-3 mb-2 bg-success text-white">Template Names</h5>
-      <ul class="list-group">
+      <h5 class="badge bg-secondary">Template Names</h5>
+      <ol class="list-group list-group-numbered">
         {templateNames.map((template) => (
-          <li class="list-group-item list-group-item-primary" key={template._id}>
-            <span>{template.templateName}</span>
+          <li class="list-group-item d-flex justify-content-between align-items-start"  key={template._id}>
+            <div class="ms-2 me-auto">
+              <div  class="fw-bold">
+              <span>{template.templateName}</span>
+              </div>
+              </div>
             <span className="icon" onClick={() => handleTemplateNameClick(template.templateName)}>
-            <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter}  className="my-icon" />
+            <div class="badge bg-primary rounded-pill">
+            <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter}  />
+              </div>
             </span>
           </li>
         ))}
-      </ul>
+      </ol>
       {renderTemplateFields()}
     </div>
   );

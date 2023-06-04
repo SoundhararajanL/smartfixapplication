@@ -97,7 +97,7 @@ const FormPage = () => {
 
   return (
     <div>
-      <h1>Template Names</h1>
+      <h1 className='bold-text'>Form</h1>
       <div>
         <Link to="/display">
           <button type="button" className="btn btn-outline-primary">
@@ -106,8 +106,8 @@ const FormPage = () => {
         </Link>
       </div>
       <div>
-        <label htmlFor="templateSelect">Select Form:</label>
-        <select
+        <label  class="badge bg-secondary" htmlFor="templateSelect">Select Form</label>
+        <select  class="form-select"
           id="templateSelect"
           onChange={(e) =>
             handleSelectChange(e.target.value, e.target.options[e.target.selectedIndex].text)
@@ -124,12 +124,12 @@ const FormPage = () => {
 
       {selectedTemplate && (
         <div>
-          <h2>{selectedTemplate} Form:</h2>
+          <h3 className='italic-text'>{selectedTemplate}</h3>
           <form onSubmit={handleSubmit}>
             {fields.map((field, index) => (
-              <div key={index}>
-                <label htmlFor={field.field}>{field.field}</label>
-                <input
+              <div  class="input-group mb-3" key={index}>
+                <label class="input-group-text" htmlFor={field.field}>{field.field}</label>
+                <input class="form-control"
                   type={field.type}
                   id={field.field}
                   name={field.field}
@@ -140,7 +140,7 @@ const FormPage = () => {
               </div>
             ))}
 
-            <button type="submit">Submit</button>
+            <button class="btn btn-success" type="submit">Submit</button>
           </form>
         </div>
       )}

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import './App.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -58,8 +56,7 @@ function Home() {
           autoClose: 1000,
           onClose: () => {
             navigate('/display', { state: { loginSuccess: true } });
-          }
-
+          },
         });
         setShowTable(true);
         setTimeout(() => {
@@ -92,8 +89,12 @@ function Home() {
   return (
     <div>
       <div className="container mt-4">
-        <div  class="navbar navbar-dark bg-primary">
-          <button type="button" className="btn btn-primary" onClick={handleAddTemplate}>
+        <div >
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleAddTemplate}
+          >
             Create Job Card Template
           </button>
         </div>
@@ -109,12 +110,12 @@ function Home() {
           <div className="card-header" role="document">
             <div>
               <div>
-                <h5>Job Card Template</h5>
+                <h5 className="card-title">Job Card Template</h5>
               </div>
               <div className="card-body">
                 <form>
                   <div className="card-text">
-                    <label className="card-title" htmlFor={`templateName-${0}`}>
+                    <label htmlFor={`templateName-${0}`} className="form-label">
                       Template Name
                     </label>
                     <input
@@ -131,7 +132,7 @@ function Home() {
                       id={`templateName-${0}`}
                     />
 
-                    <label className="card-title mt-3" htmlFor={`fields-${0}`}>
+                    <label htmlFor={`fields-${0}`} className="form-label mt-3">
                       Fields
                     </label>
                     <table className="table table-bordered">
@@ -153,22 +154,24 @@ function Home() {
                                 value={field.field}
                                 onChange={(e) => {
                                   const updatedTemplates = [...jobCardTemplates];
-                                  updatedTemplates[0].fields[fieldIndex].field = e.target.value;
+                                  updatedTemplates[0].fields[fieldIndex].field =
+                                    e.target.value;
                                   setJobCardTemplates(updatedTemplates);
                                 }}
                               />
                             </td>
                             <td>
                               <select
-                                className="form-control"
+                                className="form-select"
                                 value={field.type}
                                 onChange={(e) => {
                                   const updatedTemplates = [...jobCardTemplates];
-                                  updatedTemplates[0].fields[fieldIndex].type = e.target.value;
+                                  updatedTemplates[0].fields[fieldIndex].type =
+                                    e.target.value;
                                   setJobCardTemplates(updatedTemplates);
                                 }}
                               >
-                                <option value="" hidden selected>
+                                <option value="" hidden>
                                   -- Select --
                                 </option>
                                 <option value="text">Text</option>

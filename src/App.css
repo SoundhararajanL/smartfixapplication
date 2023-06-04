@@ -1,19 +1,12 @@
-
-
-/* new login */
-body {
-  background-image: url('https://cdn.wallpapersafari.com/31/28/rgyCIW.jpg'); /* Background image URL */
-  background-size: cover;
-  background-repeat: no-repeat;
-
- } 
 .divider:after,
 .divider:before {
 content: "";
 flex: 1;
 height: 1px;
 background: #eee;
+margin-top: 51%;
 }
+
 .h-custom {
 height: calc(100% - 73px);
 }
@@ -22,25 +15,108 @@ height: calc(100% - 73px);
 height: 100%;
 }
 }
-.video-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
+
+.p-3 {
+  padding: 1rem!important;
+  margin-right: 85%;
+  border-radius: 14px;
+  margin-left: 21px;
+  margin-top: 20px;
 }
 
-.video-background video {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
+.list-group {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  padding-left: 0;
+  margin-bottom: 0;
+  margin-left: 10%;
+  margin-right: 10%;
 }
-
-
-
-
-
 /* sign in - sign up
  */
- 
+ .badge {
+  display: inline-block;
+  padding: 0.25em 0.4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  margin-left: 10%;
+}
+
+
+
+
+.btn-warning {
+    color: #212529;
+    background-color: #ffc107;
+    border-color: #ffc107;
+    margin-left: 85%;
+    margin-top: -68px;
+}
+
+.italic-text {
+  font-style: italic;
+  font-weight: bold;
+  margin-left: 10%;
+}
+.bold-text {
+  font-weight: bold;
+  margin-left: 44%;
+}
+
+.btn-outline-primary {
+  color: #007bff;
+  background-color: transparent;
+  background-image: none;
+  border-color: #007bff;
+  margin-top: -5%;
+  margin-left: 2%;
+}
+.input-group-text {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  margin-left: 10%;
+  margin-right: 0%;
+  width: 62px;
+}
+
+.input-group>.custom-file, .input-group>.custom-select, .input-group>.form-control {
+  position: relative;
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  width: 1%;
+  margin-bottom: 0;
+  margin-right: 51%;
+}
+
+.btn-success {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+  margin-left: 43%;
+}
