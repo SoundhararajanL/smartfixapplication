@@ -71,20 +71,22 @@ function Login() {
 
 
                   <div class="form-outline mb-4">
+                  <label class="form-label" for="form3Example3">Username</label>
                     <input type="email" id="form3Example3" class="form-control form-control-lg"
                       onChange={(e) => setUsername(e.target.value.trim())}
                       placeholder="Enter a User name" />
-                      <label class="form-label" for="form3Example3">Username</label>
+
 
                   </div>
 
 
                   <div class="form-outline mb-3">
+                  <label class="form-label" for="form3Example3">password</label>
+
                     <input type="password" id="form3Example4" class="form-control form-control-lg"
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter password" />
-                      <label class="form-label" for="form3Example3">password</label>
-
+                      
                   </div>
 
                   <div class="text-center text-lg-start mt-4 pt-2">

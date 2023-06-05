@@ -1,3 +1,11 @@
+body{
+  background-image: url("https://www.msetconf.org/wp-content/uploads/2018/10/Web-Page-Background-Color.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+
 .divider:after,
 .divider:before {
 content: "";
@@ -14,8 +22,35 @@ height: calc(100% - 73px);
 .h-custom {
 height: 100%;
 }
-}
 
+}
+.align-items-center {
+  -webkit-box-align: center!important;
+  -ms-flex-align: center!important;
+  align-items: center!important;
+  height: 74px;
+}
+@media (min-width: 1200px){
+.pr-xl-5, .px-xl-5 {
+    padding-right: 3rem!important;
+    margin-top: 144px;
+}}
+.sign-image{
+  vertical-align: middle;
+  border-style: none;
+  margin-top: 392px;
+  height: 350px;
+  width: 500px;
+  margin-left: 20%;
+}
+.si-card {
+  height: 10%;
+  width: 135%;
+  margin-left: -18%;
+}
+.sign-card{
+  margin-left: 20%;
+}
 .p-3 {
   padding: 1rem!important;
   margin-right: 85%;
@@ -120,3 +155,7 @@ height: 100%;
   border-color: #28a745;
   margin-left: 43%;
 }
+
+
+
+/* d */
