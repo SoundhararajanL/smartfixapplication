@@ -68,7 +68,7 @@ const TemplateList = () => {
       await axios.put(`http://localhost:3000/template/${selectedTemplateName}`, {
         fields: editingFields,
       });
-      toast.success('Template updated successfully');
+      toast.success('Template updated successfully',{ autoClose: 500});
       setIsEditing(false);
       setTemplateFields([...editingFields]);
     } catch (error) {

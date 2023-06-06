@@ -58,49 +58,7 @@ function Signup() {
   };
 
   return (
-    //   <div>
-    //     <header>
-    //       <div>
-    //         <img src={logo} alt='logo' className='image' />
-    //       </div>
-    //     </header>
-    //     <body>
-    //       <div className='signup-box'>
-    //         <h1>User Registration</h1>
-    //         <div>
-    //           <input
-    //             type='text'
-    //             name='username'
-    //             placeholder='Username'
-    //             value={username}
-    //             onChange={(e) => setUsername(e.target.value.trim())}
-    //           />
-    //           <input
-    //             type='email'
-    //             name='email'
-    //             placeholder='Email'
-    //             value={email}
-    //             onChange={(e) => setEmail(e.target.value.trim())}
-    //           />
-    //           <input
-    //             type='password'
-    //             name='password'
-    //             placeholder='Password'
-    //             value={password}
-    //             onChange={(e) => setPassword(e.target.value)}
-    //           />
-    //           <button className='button-3' onClick={handleSignup}>
-    //             Submit
-    //           </button>
-    //           <button className='button-3' onClick={handleReset}>
-    //             Reset
-    //           </button>
-    //         </div>
-    //       </div>
-    //     </body>
-    //     <ToastContainer position='top-center' /> 
-
-    // </div>
+   
 
     <div>
       <section class="vh-100" >

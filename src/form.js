@@ -69,6 +69,10 @@ const FormPage = () => {
         fields.find((field) => field.field.toLowerCase() === "age" && parseInt(formValues[field.field]) <= 9)
       ) {
         toast.error('Only those above 10 years of age are allowed.');
+      } else if (
+        fields.find((field) => field.field.toLowerCase() === "date" && !validateDate(formValues[field.field]))
+      ) {
+        toast.error('Please select a valid date within the current date limit.');
       } else {
         axios
           .post('http://localhost:3000/form', {
@@ -76,7 +80,7 @@ const FormPage = () => {
             fields: Object.entries(formValues).map(([field, value]) => ({ field, value })),
           })
           .then((response) => {
-            console.log('Form data submitted successfully:', response.data);
+            console.log('Form data submitted successfully:', response.data,{ autoClose: 500,});
             setFormValues({});
             toast.success('Form registered successfully', { position: toast.POSITION.TOP_CENTER, autoClose: 1000 });
             setTimeout(() => {
@@ -93,6 +97,13 @@ const FormPage = () => {
   const validateEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
+  };
+
+  const validateDate = (date) => {
+    const selectedDate = new Date(date);
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0); // Set current date to midnight
+    return selectedDate >= currentDate;
   };
 
   const handleDeleteTemplate = (templateName) => {
@@ -145,7 +156,7 @@ const FormPage = () => {
               <div className="input-group mb-3" key={index}>
                 <label className="input-group-text" htmlFor={field.field}>
                   {field.field.toLowerCase() === "name" || field.field.toLowerCase() === "id" ? (
-                    <span>*</span>
+                    <span style={{color:"red"}}>*</span>
                   ) : null}
                   {field.field}
                 </label>
@@ -159,6 +170,17 @@ const FormPage = () => {
                     onChange={handleInputChange}
                     required={field.required}
                     title="Please enter a valid email address"
+                  />
+                ) : field.field.toLowerCase() === "date" ? (
+                  <input
+                    className="form-control"
+                    type="date"
+                    id={field.field}
+                    name={field.field}
+                    value={formValues[field.field] !== undefined ? formValues[field.field] : ""}
+                    onChange={handleInputChange}
+                    required={field.required}
+                    max={new Date().toISOString().split("T")[0]} // Set the max attribute to the current date
                   />
                 ) : (
                   <input
