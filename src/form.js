@@ -147,9 +147,7 @@ const FormPage = () => {
             {fields.map((field, index) => (
               <div className="input-group mb-3" key={index}>
                 <label className="input-group-text" htmlFor={field.field}>
-                  {field.field.toLowerCase() === "name" || field.field.toLowerCase() === "id" ? (
-                    <span style={{color:"red"}}>*</span>
-                  ) : null}
+                 
                   {field.field}
                 </label>
                 {field.field.toLowerCase() === "email" ? (
