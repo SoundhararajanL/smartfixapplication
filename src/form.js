@@ -65,14 +65,6 @@ const FormPage = () => {
         fields.find((field) => field.field.toLowerCase() === "email" && !validateEmail(formValues[field.field]))
       ) {
         toast.error('Please enter a valid email address.');
-      } else if (
-        fields.find((field) => field.field.toLowerCase() === "age" && parseInt(formValues[field.field]) <= 9)
-      ) {
-        toast.error('Only those above 10 years of age are allowed.');
-      } else if (
-        fields.find((field) => field.field.toLowerCase() === "date" && !validateDate(formValues[field.field]))
-      ) {
-        toast.error('Please select a valid date within the current date limit.');
       } else {
         axios
           .post('http://localhost:3000/form', {
@@ -170,17 +162,6 @@ const FormPage = () => {
                     onChange={handleInputChange}
                     required={field.required}
                     title="Please enter a valid email address"
-                  />
-                ) : field.field.toLowerCase() === "date" ? (
-                  <input
-                    className="form-control"
-                    type="date"
-                    id={field.field}
-                    name={field.field}
-                    value={formValues[field.field] !== undefined ? formValues[field.field] : ""}
-                    onChange={handleInputChange}
-                    required={field.required}
-                    max={new Date().toISOString().split("T")[0]} // Set the max attribute to the current date
                   />
                 ) : (
                   <input
