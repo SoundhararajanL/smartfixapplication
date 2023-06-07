@@ -48,6 +48,19 @@ const FormPage = () => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+
+    // Check if the label is "email" and apply email validation if required
+    const field = fields.find((field) => field.field.toLowerCase() === name.toLowerCase());
+    if (field && field.required && field.type === 'email') {
+      if (!validateEmail(value)) {
+        event.target.setCustomValidity('Please enter a valid email address.');
+      } else {
+        event.target.setCustomValidity('');
+      }
+    } else {
+      event.target.setCustomValidity('');
+    }
+
     setFormValues((prevValues) => ({
       ...prevValues,
       [name]: value,
@@ -58,8 +71,9 @@ const FormPage = () => {
     event.preventDefault();
     if (selectedTemplate) {
       const requiredFields = fields.filter((field) => field.required);
-      const missingFields = requiredFields.filter((field) => !formValues[field.field]);
-      if (missingFields.length > 0) {
+      const missingRequiredFields = requiredFields.filter((field) => !formValues[field.field]);
+  
+      if (missingRequiredFields.length > 0) {
         toast.error('Please fill in all the required fields.');
       } else {
         axios
@@ -81,17 +95,12 @@ const FormPage = () => {
       }
     }
   };
+  
 
   const validateEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // Use a comprehensive regular expression for email validation
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
     return emailRegex.test(email);
-  };
-
-  const validateDate = (date) => {
-    const selectedDate = new Date(date);
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0); // Set current date to midnight
-    return selectedDate >= currentDate;
   };
 
   const handleDeleteTemplate = (templateName) => {
@@ -147,18 +156,17 @@ const FormPage = () => {
             {fields.map((field, index) => (
               <div className="input-group mb-3" key={index}>
                 <label className="input-group-text" htmlFor={field.field}>
-                  {field.field} {field.required && <span className='lebel-badge'>*</span>}
+                  {field.field} {field.required && <span className="label-badge">*</span>}
                 </label>
                 {field.field.toLowerCase() === 'email' ? (
                   <input
                     className="form-control"
-                    type="text"
+                    type="email"
                     id={field.field}
                     name={field.field}
                     value={formValues[field.field] !== undefined ? formValues[field.field] : ''}
                     onChange={handleInputChange}
                     required={field.required}
-                    title="Please enter a valid email address"
                   />
                 ) : (
                   <input
