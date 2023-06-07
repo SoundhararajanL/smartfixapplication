@@ -59,12 +59,8 @@ const FormPage = () => {
     if (selectedTemplate) {
       const requiredFields = fields.filter((field) => field.required);
       const missingFields = requiredFields.filter((field) => !formValues[field.field]);
-      if (missingFields.length > 0 || Object.keys(formValues).length !== fields.length) {
+      if (missingFields.length > 0) {
         toast.error('Please fill in all the required fields.');
-      } else if (
-        fields.find((field) => field.field.toLowerCase() === "email" && !validateEmail(formValues[field.field]))
-      ) {
-        toast.error('Please enter a valid email address.');
       } else {
         axios
           .post('http://localhost:3000/form', {
@@ -72,7 +68,7 @@ const FormPage = () => {
             fields: Object.entries(formValues).map(([field, value]) => ({ field, value })),
           })
           .then((response) => {
-            console.log('Form data submitted successfully:', response.data,{ autoClose: 500,});
+            console.log('Form data submitted successfully:', response.data);
             setFormValues({});
             toast.success('Form registered successfully', { position: toast.POSITION.TOP_CENTER, autoClose: 1000 });
             setTimeout(() => {
@@ -116,14 +112,16 @@ const FormPage = () => {
 
   return (
     <div>
-      <h1 className='bold-text'>Form</h1>
+      <h1 className="bold-text">Form</h1>
       <div>
         <button onClick={handleDisplay} type="button" className="btn btn-outline-primary">
           Back
         </button>
       </div>
       <div>
-        <label className="badge bg-secondary" htmlFor="templateSelect">Select Form</label>
+        <label className="badge bg-secondary" htmlFor="templateSelect">
+          Select Form
+        </label>
         <select
           className="form-select"
           id="templateSelect"
@@ -131,7 +129,9 @@ const FormPage = () => {
             handleSelectChange(e.target.value, e.target.options[e.target.selectedIndex].text)
           }
         >
-          <option value="" hidden>Select a template</option>
+          <option value="" hidden>
+            Select a template
+          </option>
           {templateNames.map((template) => (
             <option key={template._id} value={template._id}>
               {template.templateName}
@@ -142,21 +142,20 @@ const FormPage = () => {
 
       {selectedTemplate && (
         <div>
-          <h3 className='italic-text'>{selectedTemplate}</h3>
+          <h3 className="italic-text">{selectedTemplate}</h3>
           <form onSubmit={handleSubmit}>
             {fields.map((field, index) => (
               <div className="input-group mb-3" key={index}>
                 <label className="input-group-text" htmlFor={field.field}>
-                 
-                  {field.field}
+                  {field.field} {field.required && <span className='lebel-badge'>*</span>}
                 </label>
-                {field.field.toLowerCase() === "email" ? (
+                {field.field.toLowerCase() === 'email' ? (
                   <input
                     className="form-control"
                     type="text"
                     id={field.field}
                     name={field.field}
-                    value={formValues[field.field] !== undefined ? formValues[field.field] : ""}
+                    value={formValues[field.field] !== undefined ? formValues[field.field] : ''}
                     onChange={handleInputChange}
                     required={field.required}
                     title="Please enter a valid email address"
@@ -167,14 +166,16 @@ const FormPage = () => {
                     type={field.type}
                     id={field.field}
                     name={field.field}
-                    value={formValues[field.field] !== undefined ? formValues[field.field] : ""}
+                    value={formValues[field.field] !== undefined ? formValues[field.field] : ''}
                     onChange={handleInputChange}
                     required={field.required}
                   />
                 )}
               </div>
             ))}
-            <button className="btn btn-success" type="submit">Submit</button>
+            <button className="btn btn-success" type="submit">
+              Submit
+            </button>
           </form>
         </div>
       )}

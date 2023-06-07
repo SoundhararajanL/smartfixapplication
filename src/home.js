@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Home() {
-  const defaultFields = [{ field: '', type: '' }];
+  const defaultFields = [{ field: '', type: '', required: false }];
 
   const navigate = useNavigate();
   const [jobCardTemplates, setJobCardTemplates] = useState([]);
@@ -44,7 +44,8 @@ function Home() {
       templateName: template.templateName,
       fields: template.fields.map((field) => ({
         field: field.field,
-        type: field.type,
+        type: field.type === 'date' ? 'date' : field.type,
+        required: field.required || false,
       })),
     };
 
@@ -89,7 +90,7 @@ function Home() {
   return (
     <div>
       <div className="container mt-4">
-        <div >
+        <div>
           <button
             type="button"
             className="btn btn-primary"
@@ -140,6 +141,7 @@ function Home() {
                         <tr>
                           <th>Field</th>
                           <th>Type</th>
+                          <th>Required</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -175,9 +177,31 @@ function Home() {
                                   -- Select --
                                 </option>
                                 <option value="text">Text</option>
-                                <option value="email">Date</option>
+                                <option value="date">Date</option>
                                 <option value="number">Number</option>
                               </select>
+                            </td>
+                            <td>
+                              <div className="form-check form-switch">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  id={`required-${fieldIndex}`}
+                                  checked={field.required}
+                                  onChange={(e) => {
+                                    const updatedTemplates = [...jobCardTemplates];
+                                    updatedTemplates[0].fields[fieldIndex].required =
+                                      e.target.checked;
+                                    setJobCardTemplates(updatedTemplates);
+                                  }}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`required-${fieldIndex}`}
+                                >
+                                  Required
+                                </label>
+                              </div>
                             </td>
                             <td>
                               <button
@@ -185,7 +209,10 @@ function Home() {
                                 className="btn btn-danger btn-sm"
                                 onClick={() => {
                                   const updatedTemplates = [...jobCardTemplates];
-                                  updatedTemplates[0].fields.splice(fieldIndex, 1);
+                                  updatedTemplates[0].fields.splice(
+                                    fieldIndex,
+                                    1
+                                  );
                                   setJobCardTemplates(updatedTemplates);
                                 }}
                               >
@@ -201,7 +228,11 @@ function Home() {
                       type="button"
                       onClick={() => {
                         const updatedTemplates = [...jobCardTemplates];
-                        updatedTemplates[0].fields.push({ field: '', type: '' });
+                        updatedTemplates[0].fields.push({
+                          field: '',
+                          type: '',
+                          required: false,
+                        });
                         setJobCardTemplates(updatedTemplates);
                       }}
                     >
@@ -210,28 +241,27 @@ function Home() {
                   </div>
                 </form>
               </div>
-              <div className="modal-footer">
+              <div className="card-footer text-muted">
                 <button
                   type="button"
-                  className="btn btn-danger"
-                  onClick={() => handleRemoveTemplate(0)}
+                  className="btn btn-success"
+                  onClick={() => handleSaveTemplate(0)}
                 >
-                  Remove Template
+                  Save Template
                 </button>
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-warning ml-2"
                   onClick={() => handleResetFields(0)}
                 >
                   Reset Fields
                 </button>
                 <button
                   type="button"
-                  className="btn btn-success"
-                  onClick={() => handleSaveTemplate(0)}
-                  disabled={jobCardTemplate.fields.length === 0}
+                  className="btn btn-danger ml-2"
+                  onClick={() => handleRemoveTemplate(0)}
                 >
-                  Save Template
+                  Remove Template
                 </button>
               </div>
             </div>

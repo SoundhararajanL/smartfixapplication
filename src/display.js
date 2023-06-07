@@ -68,7 +68,7 @@ const TemplateList = () => {
       await axios.put(`http://localhost:3000/template/${selectedTemplateName}`, {
         fields: editingFields,
       });
-      toast.success('Template updated successfully',{ autoClose: 500});
+      toast.success('Template updated successfully', { autoClose: 500 });
       setIsEditing(false);
       setTemplateFields([...editingFields]);
     } catch (error) {
@@ -81,6 +81,7 @@ const TemplateList = () => {
     const newField = {
       field: '',
       type: 'text',
+      required: false, // Add the required field to the new field object
     };
     setEditingFields((prevFields) => [...prevFields, { ...newField }]);
   };
@@ -90,10 +91,16 @@ const TemplateList = () => {
     updatedFields.splice(index, 1);
     setEditingFields(updatedFields);
   };
+
+  const handleToggleRequired = (index) => {
+    const updatedFields = [...editingFields];
+    updatedFields[index].required = !updatedFields[index].required;
+    setEditingFields(updatedFields);
+  };
+
   const handleForm = () => {
     navigate('/form', { state: { loginSuccess: true } });
   };
-
 
   const renderTemplateFields = () => {
     if (selectedTemplateName) {
@@ -114,6 +121,7 @@ const TemplateList = () => {
               <tr>
                 <th>Field</th>
                 <th>Type</th>
+                <th>Required</th>
                 {isEditing && <th>Delete</th>}
               </tr>
             </thead>
@@ -128,6 +136,7 @@ const TemplateList = () => {
                         onChange={(e) => handleFieldChange(index, 'field', e.target.value)}
                       />
                     </td>
+
                     <td>
                       <select
                         value={field.type}
@@ -138,6 +147,15 @@ const TemplateList = () => {
                         <option value="date">Date</option>
                       </select>
                     </td>
+
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={field.required}
+                        onChange={() => handleToggleRequired(index)}
+                      />
+                    </td>
+
                     <td>
                       <button className="btn btn-danger" onClick={() => handleDeleteField(index)}>
                         <FontAwesomeIcon icon={faTrash} />
@@ -150,6 +168,7 @@ const TemplateList = () => {
                   <tr key={index}>
                     <td>{field.field}</td>
                     <td>{field.type}</td>
+                    <td>{field.required ? 'Clicked Required' : 'Un-Clicked Required'}</td>
                   </tr>
                 ))
               )}
@@ -172,11 +191,9 @@ const TemplateList = () => {
       <div>
         <Home />
         <div>
-
           <button onClick={handleForm} type="button" className="btn btn-warning">
             Form
           </button>
-
         </div>
       </div>
 

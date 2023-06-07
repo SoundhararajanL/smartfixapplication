@@ -15,10 +15,12 @@ const templateSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      
+      required: {
+        type: Boolean,
+        default: false, // Set the default value for the 'required' field
+      },
     },
   ],
 });
 
 module.exports = mongoose.model('Template', templateSchema);
-
