@@ -42,12 +42,19 @@ function Home() {
   
     const templateData = {
       templateName: template.templateName,
-      fields: template.fields.map((field) => ({
-        field: field.field,
-        type: field.type === 'date' ? 'date' : field.type,
-        required: field.required || false,
-        range: field.type === 'number' ? field.range : null,
-      })),
+      fields: template.fields.map((field) => {
+        const fieldData = {
+          field: field.field,
+          type: field.type === 'date' ? 'date' : field.type,
+          required: field.required || false,
+        };
+  
+        if (field.type === 'number') {
+          fieldData.range = field.range;
+        }
+  
+        return fieldData;
+      }),
     };
   
     axios
@@ -73,6 +80,7 @@ function Home() {
         });
       });
   };
+  
 
   const handleRemoveTemplate = (index) => {
     const updatedTemplates = [...jobCardTemplates];
