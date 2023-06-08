@@ -160,3 +160,56 @@ height: 100%;
 
 
 /* d */
+.card {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-image: url("https://cdn.pixabay.com/photo/2016/03/22/15/29/blue-1273089_1280.jpg");
+  background-clip: border-box;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: 0.25rem;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 3%;
+  margin-bottom: 5%;
+}
+
+.display-table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  background-image: url("https://static.showit.co/800/8YsULeqjQL2o5NrU7-TPIA/93068/blue_gradient_opacity_1.png");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.thead {
+  display: table-header-group;
+  vertical-align: middle;
+  border-color: inherit;
+  background-color: #418edba8;
+}
+
+.tbody {
+  display: table-row-group;
+  vertical-align: middle;
+  border-color: inherit;
+  align-items: auto;
+  margin: auto;
+}
+
+.display-addfield{
+  background-color: #2087f7;
+  border-radius: 10%;
+  text-shadow: #212529;
+  margin: 2%;
+  
+}

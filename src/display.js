@@ -126,8 +126,8 @@ const TemplateList = () => {
               <FontAwesomeIcon icon={faEdit} onClick={handleEditClick} />
             )}
           </div>
-          <table className="table">
-            <thead className="thead-dark">
+          <table className="display-table">
+            <thead className="thead">
               <tr>
                 <th>Field</th>
                 <th>Type</th>
@@ -137,7 +137,7 @@ const TemplateList = () => {
                 {isEditing && <th>Delete</th>}
               </tr>
             </thead>
-            <tbody>
+            <tbody className='tbody'>
               {isEditing ? (
                 editingFields.map((field, index) => (
                   <tr key={index}>
@@ -205,7 +205,7 @@ const TemplateList = () => {
             </tbody>
           </table>
           {isEditing && (
-            <button className="btn btn-success" onClick={handleAddField}>
+            <button className="display-addfield"  onClick={handleAddField}>
               Add Field
             </button>
           )}

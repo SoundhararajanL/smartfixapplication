@@ -64,7 +64,7 @@ const FormPage = () => {
           event.target.setCustomValidity(`Please enter a value between ${NumberMin} and ${NumberMax}.`);
         } else {
           event.target.setCustomValidity('');
-        }
+        }  
       } else if (NumberMin) {
         if (value < NumberMin) {
           event.target.setCustomValidity(`Please enter a value greater than or equal to ${NumberMin}.`);
