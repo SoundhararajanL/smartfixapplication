@@ -19,6 +19,16 @@ const templateSchema = new mongoose.Schema({
         type: Boolean,
         default: false, // Set the default value for the 'required' field
       },
+      range: {
+        NumberMin: {
+          type: Number,
+          default: null,
+        },
+        NumberMax: {
+          type: Number,
+          default: null,
+        },
+      },
     },
   ],
 });

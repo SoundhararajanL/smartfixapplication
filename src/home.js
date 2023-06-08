@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Home() {
-  const defaultFields = [{ field: '', type: '', required: false }];
+  const defaultFields = [{ field: '', type: '', required: false, range: { NumberMin: '', NumberMax: '' } }];
 
   const navigate = useNavigate();
   const [jobCardTemplates, setJobCardTemplates] = useState([]);
@@ -19,7 +19,7 @@ function Home() {
 
   const handleSaveTemplate = (index) => {
     const template = jobCardTemplates[index];
-
+  
     // Check if the template name is filled
     if (template.templateName.trim() === '') {
       toast.error('Please enter a template name.', {
@@ -27,28 +27,29 @@ function Home() {
       });
       return; // Stop execution if the template name is empty
     }
-
+  
     // Check if any required fields are empty
     const hasEmptyFields = template.fields.some(
       (field) => field.field === '' || field.type === ''
     );
-
+  
     if (hasEmptyFields) {
       toast.error('Please fill in all required fields.', {
         position: toast.POSITION.TOP_CENTER,
       });
       return; // Stop execution if there are empty fields
     }
-
+  
     const templateData = {
       templateName: template.templateName,
       fields: template.fields.map((field) => ({
         field: field.field,
         type: field.type === 'date' ? 'date' : field.type,
         required: field.required || false,
+        range: field.type === 'number' ? field.range : null,
       })),
     };
-
+  
     axios
       .post('http://localhost:3000/home', templateData)
       .then((response) => {
@@ -141,6 +142,7 @@ function Home() {
                         <tr>
                           <th>Field</th>
                           <th>Type</th>
+                          <th>Range</th>
                           <th>Required</th>
                           <th>Actions</th>
                         </tr>
@@ -181,6 +183,42 @@ function Home() {
                                 <option value="number">Number</option>
                               </select>
                             </td>
+                            {field.type === 'number' ? (
+                              <td>
+                                <div className="row">
+                                  <div className="col">
+                                    <input
+                                      type="number"
+                                      className="form-control"
+                                      placeholder="Min"
+                                      value={field.range.NumberMin}
+                                      onChange={(e) => {
+                                        const updatedTemplates = [...jobCardTemplates];
+                                        updatedTemplates[0].fields[fieldIndex].range.NumberMin =
+                                          e.target.value;
+                                        setJobCardTemplates(updatedTemplates);
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="col">
+                                    <input
+                                      type="number"
+                                      className="form-control"
+                                      placeholder="Max"
+                                      value={field.range.NumberMax}
+                                      onChange={(e) => {
+                                        const updatedTemplates = [...jobCardTemplates];
+                                        updatedTemplates[0].fields[fieldIndex].range.NumberMax =
+                                          e.target.value;
+                                        setJobCardTemplates(updatedTemplates);
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                            ) : (
+                              <td></td>
+                            )}
                             <td>
                               <div className="form-check form-switch">
                                 <input
@@ -232,6 +270,7 @@ function Home() {
                           field: '',
                           type: '',
                           required: false,
+                          range: { NumberMin: '', NumberMax: '' },
                         });
                         setJobCardTemplates(updatedTemplates);
                       }}
