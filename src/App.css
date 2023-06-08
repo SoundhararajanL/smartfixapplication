@@ -171,7 +171,7 @@ height: 100%;
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  background-image: url("https://cdn.pixabay.com/photo/2016/03/22/15/29/blue-1273089_1280.jpg");
+ background-color: white;
   background-clip: border-box;
   border: 1px solid rgba(0,0,0,.125);
   border-radius: 0.25rem;
@@ -185,7 +185,7 @@ height: 100%;
   width: 100%;
   max-width: 100%;
   margin-bottom: 1rem;
-  background-image: url("https://static.showit.co/800/8YsULeqjQL2o5NrU7-TPIA/93068/blue_gradient_opacity_1.png");
+  background-image: url("https://static.vecteezy.com/system/resources/previews/003/031/766/original/light-blue-wide-background-with-radial-blurred-gradient-abstract-free-vector.jpg");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
@@ -213,3 +213,4 @@ height: 100%;
   margin: 2%;
   
 }
+

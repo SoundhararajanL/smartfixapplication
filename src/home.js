@@ -16,7 +16,6 @@ function Home() {
   const handleAddTemplate = () => {
     setJobCardTemplates([{ templateName: '', fields: [...defaultFields] }]);
   };
-
   const handleSaveTemplate = (index) => {
     const template = jobCardTemplates[index];
   
@@ -38,6 +37,23 @@ function Home() {
         position: toast.POSITION.TOP_CENTER,
       });
       return; // Stop execution if there are empty fields
+    }
+  
+    // Check if any range fields have min value greater than max value
+    const hasInvalidRange = template.fields.some((field) => {
+      if (field.type === 'number') {
+        const min = Number(field.range.NumberMin);
+        const max = Number(field.range.NumberMax);
+        return min > max || min == max ;
+      }
+      return false;
+    });
+  
+    if (hasInvalidRange) {
+      toast.error('Minimum value should be less than to maximum value.', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return; // Stop execution if there are invalid range values
     }
   
     const templateData = {
@@ -75,7 +91,7 @@ function Home() {
       })
       .catch((error) => {
         console.error(error);
-        toast.error('Error occurred while saving template!', {
+        toast.error('Error occurred while saving template! Try change your Template Name ', {
           position: toast.POSITION.TOP_CENTER,
         });
       });
