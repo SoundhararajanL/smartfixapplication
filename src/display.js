@@ -81,7 +81,11 @@ const TemplateList = () => {
     const newField = {
       field: '',
       type: 'text',
-      required: false, // Add the required field to the new field object
+      required: false,
+      range: {
+        NumberMin: 0,
+        NumberMax: 0,
+      },
     };
     setEditingFields((prevFields) => [...prevFields, { ...newField }]);
   };
@@ -95,6 +99,12 @@ const TemplateList = () => {
   const handleToggleRequired = (index) => {
     const updatedFields = [...editingFields];
     updatedFields[index].required = !updatedFields[index].required;
+    setEditingFields(updatedFields);
+  };
+
+  const handleRangeChange = (index, field, value) => {
+    const updatedFields = [...editingFields];
+    updatedFields[index].range[field] = value;
     setEditingFields(updatedFields);
   };
 
@@ -122,6 +132,8 @@ const TemplateList = () => {
                 <th>Field</th>
                 <th>Type</th>
                 <th>Required</th>
+                <th>Range - Min</th>
+                <th>Range - Max</th>
                 {isEditing && <th>Delete</th>}
               </tr>
             </thead>
@@ -157,6 +169,22 @@ const TemplateList = () => {
                     </td>
 
                     <td>
+                      <input
+                        type="number"
+                        value={field.range.NumberMin}
+                        onChange={(e) => handleRangeChange(index, 'NumberMin', e.target.value)}
+                      />
+                    </td>
+
+                    <td>
+                      <input
+                        type="number"
+                        value={field.range.NumberMax}
+                        onChange={(e) => handleRangeChange(index, 'NumberMax', e.target.value)}
+                      />
+                    </td>
+
+                    <td>
                       <button className="btn btn-danger" onClick={() => handleDeleteField(index)}>
                         <FontAwesomeIcon icon={faTrash} />
                       </button>
@@ -169,6 +197,8 @@ const TemplateList = () => {
                     <td>{field.field}</td>
                     <td>{field.type}</td>
                     <td>{field.required ? 'Clicked Required' : 'Un-Clicked Required'}</td>
+                    <td>{field.range.NumberMin}</td>
+                    <td>{field.range.NumberMax}</td>
                   </tr>
                 ))
               )}
