@@ -57,6 +57,29 @@ const FormPage = () => {
       } else {
         event.target.setCustomValidity('');
       }
+    } else if (field && field.type === 'number' && field.range) {
+      const { NumberMin, NumberMax } = field.range;
+      if (NumberMin && NumberMax) {
+        if (value < NumberMin || value > NumberMax) {
+          event.target.setCustomValidity(`Please enter a value between ${NumberMin} and ${NumberMax}.`);
+        } else {
+          event.target.setCustomValidity('');
+        }
+      } else if (NumberMin) {
+        if (value < NumberMin) {
+          event.target.setCustomValidity(`Please enter a value greater than or equal to ${NumberMin}.`);
+        } else {
+          event.target.setCustomValidity('');
+        }
+      } else if (NumberMax) {
+        if (value > NumberMax) {
+          event.target.setCustomValidity(`Please enter a value less than or equal to ${NumberMax}.`);
+        } else {
+          event.target.setCustomValidity('');
+        }
+      } else {
+        event.target.setCustomValidity('');
+      }
     } else {
       event.target.setCustomValidity('');
     }
@@ -72,7 +95,7 @@ const FormPage = () => {
     if (selectedTemplate) {
       const requiredFields = fields.filter((field) => field.required);
       const missingRequiredFields = requiredFields.filter((field) => !formValues[field.field]);
-  
+
       if (missingRequiredFields.length > 0) {
         toast.error('Please fill in all the required fields.');
       } else {
@@ -95,7 +118,6 @@ const FormPage = () => {
       }
     }
   };
-  
 
   const validateEmail = (email) => {
     // Use a comprehensive regular expression for email validation
@@ -156,7 +178,7 @@ const FormPage = () => {
             {fields.map((field, index) => (
               <div className="input-group mb-3" key={index}>
                 <label className="input-group-text" htmlFor={field.field}>
-                  {field.field} {field.required && <span style={{color:"red"}} className="label-badge">*</span>}
+                  {field.field} {field.required && <span style={{ color: 'red' }} className="label-badge">*</span>}
                 </label>
                 {field.field.toLowerCase() === 'email' ? (
                   <input
@@ -177,6 +199,8 @@ const FormPage = () => {
                     value={formValues[field.field] !== undefined ? formValues[field.field] : ''}
                     onChange={handleInputChange}
                     required={field.required}
+                    min={field.range ? field.range.NumberMin : undefined}
+                    max={field.range ? field.range.NumberMax : undefined}
                   />
                 )}
               </div>
