@@ -45,50 +45,66 @@ const FormPage = () => {
       console.error('Error fetching template fields:', error);
     }
   };
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-
-    // Check if the label is "email" and apply email validation if required
+  
     const field = fields.find((field) => field.field.toLowerCase() === name.toLowerCase());
     if (field && field.required && field.type === 'email') {
-      if (!validateEmail(value)) {
-        event.target.setCustomValidity('Please enter a valid email address.');
+      // email validation code
+    } else if (field && field.type === 'number' && field.range) {
+      const { NumberMin, NumberMax } = field.range;
+      const enteredNumber = Number(value);
+  
+      if ((NumberMin !== null && enteredNumber < NumberMin) || (NumberMax !== null && enteredNumber > NumberMax)) {
+        const errorMessage = NumberMin !== null && NumberMax !== null
+          ? `Please enter a value between ${NumberMin} and ${NumberMax}.`
+          : NumberMin !== null
+            ? `Please enter a value greater than or equal to ${NumberMin}.`
+            : `Please enter a value less than or equal to ${NumberMax}.`;
+  
+        event.target.setCustomValidity(errorMessage);
       } else {
         event.target.setCustomValidity('');
       }
-    } else if (field && field.type === 'number' && field.range) {
-      const { NumberMin, NumberMax } = field.range;
-      if (NumberMin && NumberMax) {
-        if (value < NumberMin || value > NumberMax) {
-          event.target.setCustomValidity(`Please enter a value between ${NumberMin} and ${NumberMax}.`);
-        } else {
-          event.target.setCustomValidity('');
-        }  
-      } else if (NumberMin) {
-        if (value < NumberMin) {
-          event.target.setCustomValidity(`Please enter a value greater than or equal to ${NumberMin}.`);
-        } else {
-          event.target.setCustomValidity('');
-        }
-      } else if (NumberMax) {
-        if (value > NumberMax) {
-          event.target.setCustomValidity(`Please enter a value less than or equal to ${NumberMax}.`);
-        } else {
-          event.target.setCustomValidity('');
-        }
+    } else if (field && field.type === 'date' && field.range) {
+      const { startDate, endDate } = field.range;
+      const selectedDate = new Date(value);
+      const minDate = startDate ? new Date(startDate) : null;
+      const maxDate = endDate ? new Date(endDate) : null;
+  
+      const formatDate = (date) => {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear().toString();
+        return `${day}-${month}-${year}`;
+      };
+  
+      if ((minDate && selectedDate < minDate) || (maxDate && selectedDate > maxDate)) {
+        const formattedStartDate = minDate ? formatDate(minDate) : null;
+        const formattedEndDate = maxDate ? formatDate(maxDate) : null;
+  
+        const errorMessage = formattedStartDate && formattedEndDate
+          ? `Please enter a date between ${formattedStartDate} and ${formattedEndDate}.`
+          : formattedStartDate
+            ? `Please enter a date greater than or equal to ${formattedStartDate}.`
+            : `Please enter a date less than or equal to ${formattedEndDate}.`;
+  
+        event.target.setCustomValidity(errorMessage);
       } else {
         event.target.setCustomValidity('');
       }
     } else {
       event.target.setCustomValidity('');
     }
-
+  
     setFormValues((prevValues) => ({
       ...prevValues,
       [name]: value,
     }));
   };
+  
+  
+  
 
   const handleSubmit = (event) => {
     event.preventDefault();

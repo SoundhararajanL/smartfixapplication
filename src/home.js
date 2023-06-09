@@ -7,7 +7,11 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Home() {
-  const defaultFields = [{ field: '', type: '', required: false, range: { NumberMin: '', NumberMax: '' } }];
+  const defaultFields = [
+    { field: '', type: '', required: false, range: { NumberMin: '', NumberMax: '' } },
+    
+  ];
+  
 
   const navigate = useNavigate();
   const [jobCardTemplates, setJobCardTemplates] = useState([]);
@@ -42,12 +46,17 @@ function Home() {
     // Check if any range fields have min value greater than max value
     const hasInvalidRange = template.fields.some((field) => {
       if (field.type === 'number') {
-        const min = Number(field.range.NumberMin);
-        const max = Number(field.range.NumberMax);
-        return min > max || min == max ;
+        const min = field.range.NumberMin ? Number(field.range.NumberMin) : Number.MIN_SAFE_INTEGER;
+        const max = field.range.NumberMax ? Number(field.range.NumberMax) : Number.MAX_SAFE_INTEGER;
+        return min > max || min === max;
+      } else if (field.type === 'date') {
+        const startDate = field.range.startDate ? new Date(field.range.startDate) : new Date(0);
+        const endDate = field.range.endDate ? new Date(field.range.endDate) : new Date();
+        return startDate > endDate || startDate === endDate;
       }
       return false;
     });
+    
   
     if (hasInvalidRange) {
       toast.error('Minimum value should be less than to maximum value.', {
@@ -55,6 +64,7 @@ function Home() {
       });
       return; // Stop execution if there are invalid range values
     }
+    
   
     const templateData = {
       templateName: template.templateName,
@@ -67,6 +77,11 @@ function Home() {
   
         if (field.type === 'number') {
           fieldData.range = field.range;
+        } else if (field.type === 'date') {
+          fieldData.range = {
+            startDate: field.range.startDate,
+            endDate: field.range.endDate,
+          };
         }
   
         return fieldData;
@@ -240,6 +255,37 @@ function Home() {
                                   </div>
                                 </div>
                               </td>
+                            ) : field.type === 'date' ? (
+                              <td>
+                                <div className="row">
+                                  <div className="col">
+                                    <input
+                                      type="date"
+                                      className="form-control"
+                                      value={field.range.startDate}
+                                      onChange={(e) => {
+                                        const updatedTemplates = [...jobCardTemplates];
+                                        updatedTemplates[0].fields[fieldIndex].range.startDate =
+                                          e.target.value;
+                                        setJobCardTemplates(updatedTemplates);
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="col">
+                                    <input
+                                      type="date"
+                                      className="form-control"
+                                      value={field.range.endDate}
+                                      onChange={(e) => {
+                                        const updatedTemplates = [...jobCardTemplates];
+                                        updatedTemplates[0].fields[fieldIndex].range.endDate =
+                                          e.target.value;
+                                        setJobCardTemplates(updatedTemplates);
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
                             ) : (
                               <td></td>
                             )}
@@ -294,7 +340,9 @@ function Home() {
                           field: '',
                           type: '',
                           required: false,
-                          range: { NumberMin: '', NumberMax: '' },
+                          range: { NumberMin: '', NumberMax: '' ,startDate:'', endDate:'' },
+                          
+                          
                         });
                         setJobCardTemplates(updatedTemplates);
                       }}

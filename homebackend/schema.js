@@ -17,15 +17,27 @@ const templateSchema = new mongoose.Schema({
       },
       required: {
         type: Boolean,
-        default: false, // Set the default value for the 'required' field
+        default: false,
       },
       range: {
         NumberMin: {
           type: Number,
           default: null,
+          required: function() {
+            return this.type === 'number';
+          }
         },
         NumberMax: {
           type: Number,
+          default: null,
+          
+        },
+        startDate: {
+          type: Date,
+          default: null,
+        },
+        endDate: {
+          type: Date,
           default: null,
         },
       },
