@@ -101,60 +101,60 @@ const TemplateList = () => {
     setEditingFields(updatedFields);
   };
 
-  const handleSaveClick = async () => {
-    if (editingFields.length === 0) {
-      toast.error('At least one field is required');
-      return;
-    }
-  
-    let isValid = true;
-    const errorMessages = [];
-  
-    // Check for validation errors
-    editingFields.forEach((field, index) => {
-      if (field.type === 'number') {
-        const min = parseFloat(field.range.NumberMin);
-        const max = parseFloat(field.range.NumberMax);
-        if (min > max) {
-          isValid = false;
-          errorMessages.push(`Field ${index + 1}: Minimum value should be less than maximum value`);
-        } else if (min === max) {
-          isValid = false;
-          errorMessages.push(`Field ${index + 1}: Minimum value should be less than maximum value`);
-        }
-      } else if (field.type === 'date') {
-        const startDate = new Date(field.range.startDate);
-        const endDate = new Date(field.range.endDate);
-        if (startDate > endDate) {
-          isValid = false;
-          errorMessages.push(`Field ${index + 1}: Start date should be less than end date`);
-        } else if (startDate.getTime() === endDate.getTime()) {
-          isValid = false;
-          errorMessages.push(`Field ${index + 1}: Start date should be less than end date`);
-        }
+ const handleSaveClick = async () => {
+  if (editingFields.length === 0) {
+    toast.error('At least one field is required');
+    return;
+  }
+
+  let isValid = true;
+  const errorMessages = [];
+
+  // Check for validation errors
+  editingFields.forEach((field, index) => {
+    if (field.type === 'number') {
+      const min = parseFloat(field.range.NumberMin);
+      const max = parseFloat(field.range.NumberMax);
+      if (min > max) {
+        isValid = false;
+        errorMessages.push(`Field ${index + 1}: Minimum value should be less than maximum value`);
+      } else if (min === max) {
+        isValid = false;
+        errorMessages.push(`Field ${index + 1}: Minimum value should be less than maximum value`);
       }
+    } else if (field.type === 'date') {
+      const startDate = new Date(field.range.startDate);
+      const endDate = new Date(field.range.endDate);
+      if (startDate > endDate) {
+        isValid = false;
+        errorMessages.push(`Field ${index + 1}: Start date should be less than end date`);
+      } else if (startDate.getTime() === endDate.getTime()) {
+        isValid = false;
+        errorMessages.push(`Field ${index + 1}: Start date should be less than end date`);
+      }
+    }
+  });
+
+  if (!isValid) {
+    errorMessages.forEach((message) => {
+      toast.error(message);
     });
-  
-    if (!isValid) {
-      errorMessages.forEach((message) => {
-        toast.error(message);
-      });
-      return;
-    }
-  
-    try {
-      await axios.put(`http://localhost:3000/template/${selectedTemplateName}`, {
-        fields: editingFields,
-      });
-      toast.success('Template updated successfully', { autoClose: 500 });
-      setIsEditing(false);
-      setTemplateFields([...editingFields]);
-    } catch (error) {
-      console.error('Error updating template:', error);
-      toast.error('Failed to update template');
-    }
-  };
-  
+    return;
+  }
+
+  try {
+    await axios.put(`http://localhost:3000/template/${selectedTemplateName}`, {
+      fields: editingFields,
+    });
+    toast.success('Template updated successfully', { autoClose: 500 });
+    setIsEditing(false);
+    setTemplateFields([...editingFields]);
+  } catch (error) {
+    console.error('Error updating template:', error);
+    toast.error('Failed to update template');
+  }
+};
+
   const handleAddField = () => {
     const newField = {
       field: '',
