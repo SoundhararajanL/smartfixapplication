@@ -197,17 +197,18 @@ const TemplateList = () => {
     navigate('/form', { state: { loginSuccess: true } });
   };
 
+  
   const formatDate = (dateString) => {
-    if (!dateString) {
+    if (dateString === null) {
       return ''; // Return empty string for null dates
     }
-    
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear().toString().padStart(4, '0');
-    return `${day}-${month}-${year}`;
+    const year = date.getFullYear().toString();
+    return `${year}-${month}-${day}`;
   };
+
   
 
   const renderTemplateFields = () => {
