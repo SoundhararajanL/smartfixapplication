@@ -4,13 +4,15 @@ import Home from './home';
 import FormPage from './form';
 import TemplateList from './display';
 import { Form } from 'react-router-dom';
+import FormData from './formData'
 function App() {
   return (
    <div>
      {/* <Login /> */}
-     < Home />
+     {/* < Home /> */}
      {/* <TemplateList /> */}
      {/* <FormPage />  */}
+     <FormData/>
      
     </div>
   );

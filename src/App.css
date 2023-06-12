@@ -214,3 +214,14 @@ height: 100%;
   
 }
 
+.forward {
+  margin-left: 7%;
+  margin-top: -23px;
+}
+
+
+.table-line {
+  border-bottom: 1.5px solid #ccc;
+  border-color: #212529;
+}
+

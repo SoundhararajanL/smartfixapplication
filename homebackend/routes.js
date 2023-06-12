@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Template = require('./schema');
 const Form = require("./formSchema")
+const formData = require("./formSchema")
 
 router.post('/home', async (req, res) => {
   try {
@@ -132,5 +133,16 @@ router.put('/template/:templateName', async (req, res) => {
   }
 });
 
+
+router.get('/formdata', (req, res) => {
+  formData.find()
+    .then(templates => {
+      res.json(templates);
+    })
+    .catch(error => {
+      console.error('Error fetching templates:', error);
+      res.status(500).json({ error: 'An error occurred while fetching templates.' });
+    });
+});
 
 module.exports = router;
