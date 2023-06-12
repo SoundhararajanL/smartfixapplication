@@ -29,9 +29,9 @@ const TemplatePage = () => {
       <h2>Form collection</h2>
       <ul>
         {templates.map(template => (
-          <li key={template._id}>
+          <li key={template._id} onClick={() => handleTemplateClick(template)}>
             <span className="template-name">{template.templateName}</span>
-            <span onClick={() => handleTemplateClick(template)}>
+            <span >
               <div className="forward">
                 <FontAwesomeIcon icon={faForward} />
               </div>
