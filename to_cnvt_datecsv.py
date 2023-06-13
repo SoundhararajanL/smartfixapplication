@@ -8,7 +8,7 @@ time_str = current_datetime.strftime("%H-%M-%S")
 
 output_directory = "/Users/tamilselvans/powerbi/datefolder"
 
-current_path = os.path.dirname(os.path.abspath(__file__))
+current_path = os.path.dirname(os.path.abspath(__file__)) # os.path.abspath(__file__): the __file__ variable refers to the current script files path it  including the file name os.path.abspath() returns the absolute path ofthe script file
 
 files = os.listdir(current_path)
 
@@ -21,10 +21,10 @@ for file in files:
                 with open(original_path, 'r') as f:
                     pass
             except IOError:
-                print(f"File '{file}' is still being written. Skipping.")
+                print(f"file '{file}' is still being written. skipping.")
                 continue
 
-            # File size in MB
+            # file size in mb
             file_size_mb = os.path.getsize(original_path) / (1024 * 1024)
 
             if file_size_mb >= 100:
@@ -40,8 +40,8 @@ for file in files:
 
                 os.rename(original_path, new_path)
 
-                print(f"File '{file}' saved as: {new_path}")
+                print(f"file '{file}' saved as: {new_path}")
             else:
-                print(f"File '{file}' size is not greater than 99 MB. No renaming performed.")
+                print(f"file '{file}' size is not greater than 99 MB. No renaming performed.")
         else:
-            print(f"File '{file}' is still being written or empty. Skipping.")
+            print(f"file '{file}' is still being written or empty. skipping.")
