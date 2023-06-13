@@ -1,38 +1,46 @@
 import os
 import pandas as pd
 import zipfile
-# current csv files path
 
-path = '.'
+path = '/Users/tamilselvans/powerbi/datefolder'
 
-# geting list of csv file
-csv_files = [file for file in os.listdir(path) if file.endswith('.csv')] # path having list of files it should get only endwith '.csv' files
+# get a list of csv files i
+csv_files = [file for file in os.listdir(path) if file.endswith('.csv')]
 
-# processing  each files
+# process each CSV file
 for csv_file in csv_files:
-    
-    df = pd.read_csv(os.path.join(path, csv_file)) # reading csv file
+    # read thefile
+    df = pd.read_csv(os.path.join(path, csv_file))
 
-    
-    def hex_to_int(x): # convt hext to decimal
+    # convert hex to decimal
+    def hex_to_int(x):
         a = int(x, 16)
         return a // 1000000000000000
 
     df['decimal_data'] = df['hex_data'].apply(hex_to_int)
 
-    # pivot  table
+    # pivot table
     pivot_table = df.pivot(index='timestamp', columns='arbitration_id', values='decimal_data')
     pivot_table.index = pd.to_datetime(pivot_table.index)
-    re_pivot = pivot_table.resample('1s').max()  # or min()
+    re_pivot = pivot_table.resample('1s').max()  # or min() or other
 
-
-    # compress into  zip
+    # compress into a zip file with csv extension
     output_filename = os.path.splitext(csv_file)[0] + '.zip'
     output_path = os.path.join(path, output_filename)
 
     with zipfile.ZipFile(output_path, 'w') as zf:
-        # adding dataframe
-        zf.writestr(csv_file[:-4] + '.txt', re_pivot.to_csv()) # extracts the filename without the extension , '.txt' extension, The content of this file is the processed data in csv format
+        # add dataFrame to the zip file as a csv
+        zf.writestr(csv_file[:-4] + '.csv', re_pivot.to_csv(index=True))
 
-    # removeing old csv which are in path
+    # Remove the old csv file
+    os.remove(os.path.join(path, csv_file))
+
+# get a list of csv files in the specified path after processing
+csv_files_after_processing = [file for file in os.listdir(path) if file.endswith('.csv')]
+
+for csv_file in csv_files_after_processing:
+
+    with zipfile.ZipFile(os.path.join(path, csv_file), 'r') as zf:
+        zf.extractall(path)
+
     os.remove(os.path.join(path, csv_file))
