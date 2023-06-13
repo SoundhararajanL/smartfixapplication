@@ -9,10 +9,10 @@ function App() {
   return (
    <div>
      {/* <Login /> */}
-     {/* < Home /> */}
+     < Home />
      {/* <TemplateList /> */}
      {/* <FormPage />  */}
-     <FormData/>
+     {/* <FormData/> */}
      
     </div>
   );

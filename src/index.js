@@ -9,7 +9,7 @@ import Login from './login';
 import Home from './home';
 import TemplateList from './display';
 import FormPage from './form';
-import formData from './formData';
+import FormData from './formData';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -20,7 +20,7 @@ ReactDOM.render(
       <Route path="/home" element={<Home />} />
       <Route path="/display" element={<TemplateList />} />
       <Route path="/form" element={<FormPage />} />
-      <Route path="/formdata" element={<formDate/>}/>
+      <Route path="/formdata" element={<FormData/>}/>
       
     </Routes>
   </BrowserRouter>,

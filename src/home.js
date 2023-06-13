@@ -124,7 +124,9 @@ function Home() {
     updatedTemplates[index].fields = [...defaultFields];
     setJobCardTemplates(updatedTemplates);
   };
-
+  const handleDisplay = () => {
+    navigate('/display', { state: { loginSuccess: true } });
+  };
   const jobCardTemplate = jobCardTemplates[0];
 
   return (
@@ -139,6 +141,9 @@ function Home() {
             Create Job Card Template
           </button>
         </div>
+        <button className='template-table' onClick={handleDisplay} >
+          Show Templates
+        </button >
       </div>
 
       {jobCardTemplate && (
