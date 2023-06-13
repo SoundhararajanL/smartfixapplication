@@ -1,19 +1,20 @@
 import os
 import pandas as pd
 import zipfile
+# current csv files path
 
 path = '.'
 
 # geting list of csv file
-csv_files = [file for file in os.listdir(path) if file.endswith('.csv')]
+csv_files = [file for file in os.listdir(path) if file.endswith('.csv')] # path having list of files it should get only endwith '.csv' files
 
-# each files
+# processing  each files
 for csv_file in csv_files:
-    # reading csv file
-    df = pd.read_csv(os.path.join(path, csv_file))
+    
+    df = pd.read_csv(os.path.join(path, csv_file)) # reading csv file
 
-    # convt hext to decimal
-    def hex_to_int(x):
+    
+    def hex_to_int(x): # convt hext to decimal
         a = int(x, 16)
         return a // 1000000000000000
 
@@ -31,7 +32,7 @@ for csv_file in csv_files:
 
     with zipfile.ZipFile(output_path, 'w') as zf:
         # adding dataframe
-        zf.writestr(csv_file[:-4] + '.txt', re_pivot.to_csv())
+        zf.writestr(csv_file[:-4] + '.txt', re_pivot.to_csv()) # extracts the filename without the extension , '.txt' extension, The content of this file is the processed data in csv format
 
-    # removeing old csv
+    # removeing old csv which are in path
     os.remove(os.path.join(path, csv_file))
