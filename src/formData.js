@@ -66,7 +66,11 @@ const FormData = () => {
       </select>
 
       {selectedTemplates.length > 0 && showTable && (
+       
+
         <div className="horizontal-tables">
+          
+          
           {selectedTemplates.map((template, index) => (
             <div className="table-container" key={index}>
               <h4 className="form-name">{selectedTemplateName}</h4>
