@@ -310,17 +310,38 @@ height: 100%;
   color: #2c5777;
 }
 
-
+/* 
 .template-table{
   margin-top: 1%;
 }
+ */
 
+/* .center-table {
+  margin: 0 auto; 
+  text-align: center;
+} */
 
-.center-table {
-  margin: 0 auto; /* This centers the table horizontally */
-  text-align: center; /* This centers the content of the table cells */
+/* .full-tabel{
+  margin-bottom: 2%;
+} */
+
+.Form-font{
+  font-weight: bolder;
+}
+.form-name{
+  font-style: italic;
+  
 }
 
-.full-tabel{
-  margin-bottom: 2%;
+
+.horizontal-tables {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-left: 13%;
+}
+
+.table-container {
+  width: calc(33.33% - 10px);
+  margin-bottom: 20px;
 }

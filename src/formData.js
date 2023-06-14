@@ -56,21 +56,21 @@ const FormData = () => {
       <button className="button-8" onClick={handleForm}>
         Back
       </button>
-      <h2>Form collection</h2>
+      <h2 className='Form-font' >Form collection</h2>
 
       <select onChange={handleTemplateChange}>
-        <option value="" hidden>
+        <option  value="" hidden>
           --Form collection--
         </option>
         {getTemplateOptions()}
       </select>
 
       {selectedTemplates.length > 0 && showTable && (
-        <div>
-          <h4 className='center-table'>{selectedTemplateName}</h4>
+        <div className="horizontal-tables">
           {selectedTemplates.map((template, index) => (
-            <div className='full-tabel' key={index}>
-              <h5 className='center-table'>Template #{index + 1}</h5>
+            <div className="table-container" key={index}>
+              <h4 className="form-name">{selectedTemplateName}</h4>
+              <h5 className="center-table">Template #{index + 1}</h5>
               <table className="center-table">
                 <thead className="thead">
                   <tr>
@@ -80,18 +80,13 @@ const FormData = () => {
                 </thead>
                 <tbody className="tbody">
                   {template.fields.map((field, index) => (
-                    <React.Fragment key={index}>
-                      <tr>
-                        <td>{field.field}</td>
-                        <td>{field.value}</td>
-                      </tr>
-                      <tr>
-                        <td className="table-line" colSpan="2"></td>
-                      </tr>
-                    </React.Fragment>
+                    <tr key={index}>
+                      <td>{field.field}</td>
+                      <td>{field.value}</td>
+                    </tr>
                   ))}
                 </tbody>
-              </table>
+              </table> 
             </div>
           ))}
         </div>
