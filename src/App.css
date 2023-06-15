@@ -367,3 +367,14 @@ height: 100%;
 .center-table th {
   background-color: #f2f2f2;
 }
+
+
+.not-found{
+  margin-left: 42%;
+  margin-top: 10%;
+}
+
+
+.search-bar {
+  margin-left: 80%;
+}

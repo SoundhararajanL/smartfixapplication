@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faForward } from '@fortawesome/free-solid-svg-icons';
+import { faForward, faSearch, faSadTear } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
 const FormData = () => {
@@ -9,6 +9,9 @@ const FormData = () => {
   const [selectedTemplateName, setSelectedTemplateName] = useState('');
   const [selectedTemplates, setSelectedTemplates] = useState([]);
   const [showTable, setShowTable] = useState(false);
+  const [searchName, setSearchName] = useState('');
+  const [searchResult, setSearchResult] = useState([]);
+  const [searchError, setSearchError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +36,9 @@ const FormData = () => {
 
   const handleTemplateChange = (event) => {
     setSelectedTemplateName(event.target.value);
+    setSearchName('');
+    setSearchResult([]);
+    setSearchError(false);
   };
 
   const getTemplateOptions = () => {
@@ -51,6 +57,21 @@ const FormData = () => {
     navigate('/form', { state: { loginSuccess: true } });
   };
 
+  const handleSearch = () => {
+    const filteredTemplates = selectedTemplates.filter((template) =>
+      template.fields.some((field) =>
+        field.value.toLowerCase() === searchName.toLowerCase()
+      )
+    );
+    setSearchResult(filteredTemplates);
+    setSearchError(
+      searchName.trim() !== '' &&
+      filteredTemplates.length === 0 &&
+      selectedTemplates.length > 0
+    );
+  };
+  
+
   const renderTemplateTable = () => {
     const templateFields = selectedTemplates.reduce((fields, template) => {
       template.fields.forEach((field) => {
@@ -61,28 +82,30 @@ const FormData = () => {
       return fields;
     }, []);
 
+    const rowsToShow = searchResult.length > 0 ? searchResult : selectedTemplates;
+
     return (
       <table className="center-table">
         <thead className="thead">
           <tr>
-            <th>#</th>
             {templateFields.map((field) => (
               <th key={field}>{field}</th>
             ))}
           </tr>
         </thead>
         <tbody className="tbody">
-          {selectedTemplates.map((template, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              {templateFields.map((field) => {
-                const fieldValue = template.fields.find(
-                  (f) => f.field === field
-                );
-                return <td key={field}>{fieldValue ? fieldValue.value : ''}</td>;
-              })}
-            </tr>
-          ))}
+          {rowsToShow.length > 0 ? (
+            rowsToShow.map((template, index) => (
+              <tr key={index}>
+                {templateFields.map((field) => {
+                  const fieldValue = template.fields.find(
+                    (f) => f.field === field
+                  );
+                  return <td key={field}>{fieldValue ? fieldValue.value : ''}</td>;
+                })}
+              </tr>
+            ))
+          ) : null}
         </tbody>
       </table>
     );
@@ -103,10 +126,30 @@ const FormData = () => {
       </select>
 
       {selectedTemplates.length > 0 && showTable && (
-        <div className="horizontal-tables">
-          <div className="table-container">
-            {renderTemplateTable()}
+        <div>
+          <div className="search-bar">
+            <input
+              type="text"
+              value={searchName}
+              onChange={(event) => setSearchName(event.target.value)}
+              placeholder="Search by name"
+            />
+            <button onClick={handleSearch}>
+              <FontAwesomeIcon icon={faSearch} />
+            </button>
           </div>
+          {searchError ? (
+            <div className="not-found">
+              <FontAwesomeIcon icon={faSadTear} className="sad-icon" />
+              <p>User name not found</p>
+            </div>
+          ) : (
+            <div className="horizontal-tables">
+              <div className="table-container">
+                {renderTemplateTable()}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
