@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faForward, faSearch, faSadTear } from '@fortawesome/free-solid-svg-icons';
+import { faForward, faSearch, faSadTear, } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
 const FormData = () => {
@@ -141,7 +141,8 @@ const FormData = () => {
           </div>
           {searchError ? (
             <div className="not-found">
-              <FontAwesomeIcon icon={faSadTear} className="sad-icon" />
+              
+              <FontAwesomeIcon icon={faSadTear} bounce className="sad-icon" />
               <p>User name not found</p>
             </div>
           ) : (
