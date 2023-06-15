@@ -51,48 +51,60 @@ const FormData = () => {
     navigate('/form', { state: { loginSuccess: true } });
   };
 
+  const renderTemplateTable = () => {
+    const templateFields = selectedTemplates.reduce((fields, template) => {
+      template.fields.forEach((field) => {
+        if (!fields.includes(field.field)) {
+          fields.push(field.field);
+        }
+      });
+      return fields;
+    }, []);
+
+    return (
+      <table className="center-table">
+        <thead className="thead">
+          <tr>
+            {templateFields.map((field) => (
+              <th key={field}>{field}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="tbody">
+          {selectedTemplates.map((template, index) => (
+            <tr key={index}>
+              {templateFields.map((field) => {
+                const fieldValue = template.fields.find(
+                  (f) => f.field === field
+                );
+                return <td key={field}>{fieldValue ? fieldValue.value : ''}</td>;
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
+
   return (
     <div>
       <button className="button-8" onClick={handleForm}>
         Back
       </button>
-      <h2 className='Form-font' >Form collection</h2>
+      <h2 className="Form-font">Form collection</h2>
 
       <select onChange={handleTemplateChange}>
-        <option  value="" hidden>
+        <option value="" hidden>
           --Form collection--
         </option>
         {getTemplateOptions()}
       </select>
 
       {selectedTemplates.length > 0 && showTable && (
-       
-
         <div className="horizontal-tables">
-          
-          
-          {selectedTemplates.map((template, index) => (
-            <div className="table-container" key={index}>
-              <h4 className="form-name">{selectedTemplateName}</h4>
-              <h5 className="center-table">Template #{index + 1}</h5>
-              <table className="center-table">
-                <thead className="thead">
-                  <tr>
-                    <th>Field</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody className="tbody">
-                  {template.fields.map((field, index) => (
-                    <tr key={index}>
-                      <td>{field.field}</td>
-                      <td>{field.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table> 
-            </div>
-          ))}
+          <div className="table-container">
+            {renderTemplateTable()}
+          </div>
         </div>
       )}
     </div>

@@ -338,10 +338,32 @@ height: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-left: 13%;
+  margin-left: 5%;
 }
 
 .table-container {
   width: calc(33.33% - 10px);
   margin-bottom: 20px;
+}
+
+
+.table-container {
+  
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.center-table {
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+.center-table th,
+.center-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+.center-table th {
+  background-color: #f2f2f2;
 }
