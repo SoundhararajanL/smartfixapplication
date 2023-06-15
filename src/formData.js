@@ -60,7 +60,7 @@ const FormData = () => {
   const handleSearch = () => {
     const filteredTemplates = selectedTemplates.filter((template) =>
       template.fields.some((field) =>
-        field.value.toLowerCase() === searchName.toLowerCase()
+        field.field.toLowerCase() === 'name' && field.value.toLowerCase() === searchName.toLowerCase()
       )
     );
     setSearchResult(filteredTemplates);
@@ -70,6 +70,7 @@ const FormData = () => {
       selectedTemplates.length > 0
     );
   };
+  
   
 
   const renderTemplateTable = () => {
