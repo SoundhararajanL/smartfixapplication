@@ -65,6 +65,7 @@ const FormData = () => {
       <table className="center-table">
         <thead className="thead">
           <tr>
+            <th>#</th>
             {templateFields.map((field) => (
               <th key={field}>{field}</th>
             ))}
@@ -73,6 +74,7 @@ const FormData = () => {
         <tbody className="tbody">
           {selectedTemplates.map((template, index) => (
             <tr key={index}>
+              <td>{index + 1}</td>
               {templateFields.map((field) => {
                 const fieldValue = template.fields.find(
                   (f) => f.field === field
