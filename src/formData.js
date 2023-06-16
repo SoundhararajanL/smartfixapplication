@@ -12,6 +12,8 @@ const FormData = () => {
   const [searchName, setSearchName] = useState('');
   const [searchResult, setSearchResult] = useState([]);
   const [searchError, setSearchError] = useState(false);
+  const [sortedColumn, setSortedColumn] = useState(null);
+  const [sortOrder, setSortOrder] = useState('asc');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,7 +72,52 @@ const FormData = () => {
       selectedTemplates.length > 0
     );
   };
+
+  const handleColumnClick = (column) => {
+    if (sortedColumn === column) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortedColumn(column);
+      setSortOrder('asc');
+    }
+  };
+  const sortRows = (rows) => {
+    if (!sortedColumn) {
+      return rows;
+    }
   
+    const sortedRows = [...rows];
+  
+    sortedRows.sort((a, b) => {
+      const fieldA = a.fields.find((f) => f.field === sortedColumn)?.value;
+      const fieldB = b.fields.find((f) => f.field === sortedColumn)?.value;
+  
+      if (fieldA === undefined || fieldB === undefined) {
+        return 0;
+      }
+  
+      if (!isNaN(fieldA) && !isNaN(fieldB)) {
+        // Both values are numeric
+        const numA = parseFloat(fieldA);
+        const numB = parseFloat(fieldB);
+  
+        if (sortOrder === 'asc') {
+          return numA - numB;
+        } else {
+          return numB - numA;
+        }
+      } else {
+        // At least one value is non-numeric
+        if (sortOrder === 'asc') {
+          return fieldA.localeCompare(fieldB);
+        } else {
+          return fieldB.localeCompare(fieldA);
+        }
+      }
+    });
+  
+    return sortedRows;
+  };
   
 
   const renderTemplateTable = () => {
@@ -84,24 +131,25 @@ const FormData = () => {
     }, []);
 
     const rowsToShow = searchResult.length > 0 ? searchResult : selectedTemplates;
+    const sortedRows = sortRows(rowsToShow);
 
     return (
       <table className="center-table">
         <thead className="thead">
           <tr>
             {templateFields.map((field) => (
-              <th key={field}>{field}</th>
+              <th key={field} onClick={() => handleColumnClick(field)}>
+                {field}
+              </th>
             ))}
           </tr>
         </thead>
         <tbody className="tbody">
-          {rowsToShow.length > 0 ? (
-            rowsToShow.map((template, index) => (
+          {sortedRows.length > 0 ? (
+            sortedRows.map((template, index) => (
               <tr key={index}>
                 {templateFields.map((field) => {
-                  const fieldValue = template.fields.find(
-                    (f) => f.field === field
-                  );
+                  const fieldValue = template.fields.find((f) => f.field === field);
                   return <td key={field}>{fieldValue ? fieldValue.value : ''}</td>;
                 })}
               </tr>
@@ -141,15 +189,12 @@ const FormData = () => {
           </div>
           {searchError ? (
             <div className="not-found">
-              
               <FontAwesomeIcon icon={faSadTear} bounce className="sad-icon" />
               <p>User name not found</p>
             </div>
           ) : (
             <div className="horizontal-tables">
-              <div className="table-container">
-                {renderTemplateTable()}
-              </div>
+              <div className="table-container">{renderTemplateTable()}</div>
             </div>
           )}
         </div>
