@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faForward, faSearch, faSadTear, } from '@fortawesome/free-solid-svg-icons';
+import { faChevronUp, faChevronDown, faSearch, faSadTear } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
 const FormData = () => {
@@ -61,8 +61,10 @@ const FormData = () => {
 
   const handleSearch = () => {
     const filteredTemplates = selectedTemplates.filter((template) =>
-      template.fields.some((field) =>
-        field.field.toLowerCase() === 'name' && field.value.toLowerCase() === searchName.toLowerCase()
+      template.fields.some(
+        (field) =>
+          field.field.toLowerCase() === 'name' &&
+          field.value.toLowerCase() === searchName.toLowerCase()
       )
     );
     setSearchResult(filteredTemplates);
@@ -81,26 +83,34 @@ const FormData = () => {
       setSortOrder('asc');
     }
   };
+
   const sortRows = (rows) => {
     if (!sortedColumn) {
       return rows;
     }
-  
+
     const sortedRows = [...rows];
-  
+
     sortedRows.sort((a, b) => {
       const fieldA = a.fields.find((f) => f.field === sortedColumn)?.value;
       const fieldB = b.fields.find((f) => f.field === sortedColumn)?.value;
-  
+
       if (fieldA === undefined || fieldB === undefined) {
-        return 0;
+        // Handle empty values
+        if (fieldA === undefined && fieldB === undefined) {
+          return 0; // Both values are empty, consider them equal
+        } else if (fieldA === undefined) {
+          return sortOrder === 'asc' ? 1 : -1; // Empty values come after non-empty values
+        } else {
+          return sortOrder === 'asc' ? -1 : 1; // Empty values come before non-empty values
+        }
       }
-  
+
       if (!isNaN(fieldA) && !isNaN(fieldB)) {
         // Both values are numeric
         const numA = parseFloat(fieldA);
         const numB = parseFloat(fieldB);
-  
+
         if (sortOrder === 'asc') {
           return numA - numB;
         } else {
@@ -115,10 +125,9 @@ const FormData = () => {
         }
       }
     });
-  
+
     return sortedRows;
   };
-  
 
   const renderTemplateTable = () => {
     const templateFields = selectedTemplates.reduce((fields, template) => {
@@ -133,6 +142,18 @@ const FormData = () => {
     const rowsToShow = searchResult.length > 0 ? searchResult : selectedTemplates;
     const sortedRows = sortRows(rowsToShow);
 
+    const renderSortArrow = (column) => {
+      if (sortedColumn === column) {
+        return (
+          <FontAwesomeIcon
+            icon={sortOrder === 'asc' ? faChevronUp : faChevronDown}
+            className="sort-arrow"
+          />
+        );
+      }
+      return null;
+    };
+
     return (
       <table className="center-table">
         <thead className="thead">
@@ -140,6 +161,7 @@ const FormData = () => {
             {templateFields.map((field) => (
               <th key={field} onClick={() => handleColumnClick(field)}>
                 {field}
+                {renderSortArrow(field)}
               </th>
             ))}
           </tr>
