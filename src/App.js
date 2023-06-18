@@ -5,14 +5,16 @@ import FormPage from './form';
 import TemplateList from './display';
 import { Form } from 'react-router-dom';
 import FormData from './formData'
+import RandomFormGenerator from './random';
 function App() {
   return (
    <div>
      {/* <Login /> */}
-     < Home />
+     {/* < Home /> */}
      {/* <TemplateList /> */}
      {/* <FormPage />  */}
      {/* <FormData/> */}
+     <RandomFormGenerator />
      
     </div>
   );
