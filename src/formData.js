@@ -15,17 +15,24 @@ const FormData = () => {
   const [sortedColumn, setSortedColumn] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');
   const navigate = useNavigate();
+  const [serialNumbers, setSerialNumbers] = useState([]);
+
 
   useEffect(() => {
     // Fetch templates from MongoDB collection
     axios
-      .get('http://localhost:3000/formdata')
-      .then((response) => {
-        setTemplates(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching templates:', error);
-      });
+    .get('http://localhost:3000/formdata')
+    .then((response) => {
+      const fetchedTemplates = response.data;
+      setTemplates(fetchedTemplates);
+
+      // Generate serial numbers for each template
+      const serials = fetchedTemplates.map((_, index) => index + 1);
+      setSerialNumbers(serials);
+    })
+    .catch((error) => {
+      console.error('Error fetching templates:', error);
+    });
   }, []);
 
   useEffect(() => {
@@ -92,8 +99,15 @@ const FormData = () => {
     const sortedRows = [...rows];
 
     sortedRows.sort((a, b) => {
-      const fieldA = a.fields.find((f) => f.field === sortedColumn)?.value;
-      const fieldB = b.fields.find((f) => f.field === sortedColumn)?.value;
+      let fieldA, fieldB;
+
+      if (sortedColumn === 'Serial No.') {
+        fieldA = serialNumbers[selectedTemplates.indexOf(a)];
+        fieldB = serialNumbers[selectedTemplates.indexOf(b)];
+      } else {
+        fieldA = a.fields.find((f) => f.field === sortedColumn)?.value;
+        fieldB = b.fields.find((f) => f.field === sortedColumn)?.value;
+      }
 
       if (fieldA === undefined || fieldB === undefined) {
         // Handle empty values
@@ -138,10 +152,10 @@ const FormData = () => {
       });
       return fields;
     }, []);
-
+  
     const rowsToShow = searchResult.length > 0 ? searchResult : selectedTemplates;
     const sortedRows = sortRows(rowsToShow);
-
+  
     const renderSortArrow = (column) => {
       if (sortedColumn === column) {
         return (
@@ -153,11 +167,15 @@ const FormData = () => {
       }
       return null;
     };
-
+  
     return (
       <table className="center-table">
         <thead className="thead">
           <tr>
+            <th onClick={() => handleColumnClick('Serial No.')}>
+              Serial No.
+              {renderSortArrow('Serial No.')}
+            </th>
             {templateFields.map((field) => (
               <th key={field} onClick={() => handleColumnClick(field)}>
                 {field}
@@ -170,6 +188,7 @@ const FormData = () => {
           {sortedRows.length > 0 ? (
             sortedRows.map((template, index) => (
               <tr key={index}>
+                <td>{serialNumbers[selectedTemplates.indexOf(template)]}</td>
                 {templateFields.map((field) => {
                   const fieldValue = template.fields.find((f) => f.field === field);
                   return <td key={field}>{fieldValue ? fieldValue.value : ''}</td>;
@@ -181,6 +200,7 @@ const FormData = () => {
       </table>
     );
   };
+  
 
   return (
     <div>

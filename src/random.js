@@ -1,5 +1,8 @@
 import React from 'react';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 class RandomFormGenerator extends React.Component {
   handleSubmit = async (event) => {
@@ -60,11 +63,10 @@ class RandomFormGenerator extends React.Component {
         })
       );
 
-      console.log('Forms submitted successfully!');
-      // Display a success message to the user (e.g., using a toast library)
+      toast.success('Forms submitted successfully!');
     } catch (error) {
       console.error('Error submitting forms:', error);
-      // Display an error message to the user
+      toast.error('Error submitting forms');
     }
   };
 
@@ -127,6 +129,7 @@ class RandomFormGenerator extends React.Component {
       <div>
         <h2>Random Form Generator</h2>
         <button onClick={this.handleSubmit}>Generate Forms</button>
+        <ToastContainer />
       </div>
     );
   }
