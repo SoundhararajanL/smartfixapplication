@@ -10,7 +10,7 @@ class RandomFormGenerator extends React.Component {
       const templateName = 'soundhar';
       const fields = [
         { field: 'Name', type: 'text' },
-        { field: 'Age', type: 'number', range: { NumberMin: 18 } },
+        { field: 'Age', type: 'number', range: { NumberMin: 18, NumberMax: 50 } },
         { field: 'Emp ID', type: 'text' },
         { field: 'City', type: 'text' },
         { field: 'Email', type: 'text' },
@@ -36,7 +36,7 @@ class RandomFormGenerator extends React.Component {
 
           switch (type) {
             case 'text':
-              value = this.generateRandomText();
+              value = this.generateRandomText(field);
               break;
             case 'number':
               value = this.generateRandomNumber(range);
@@ -68,25 +68,58 @@ class RandomFormGenerator extends React.Component {
     }
   };
 
-  generateRandomText = () => {
-    // Generate a random text value
+  generateRandomText = (field) => {
+    if (field === 'Name') {
+      const randomNames = ['John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Williams'];
+      const randomIndex = Math.floor(Math.random() * randomNames.length);
+      return randomNames[randomIndex];
+    }
+
+    if (field === 'City') {
+      const randomCities = ['New York', 'London', 'Paris', 'Tokyo'];
+      const randomIndex = Math.floor(Math.random() * randomCities.length);
+      return randomCities[randomIndex];
+    }
+
+    if (field === 'Email') {
+      const randomDomains = ['gmail.com', 'yahoo.com', 'hotmail.com'];
+      const randomIndex = Math.floor(Math.random() * randomDomains.length);
+      const username = this.generateRandomText('Name').replace(' ', '').toLowerCase();
+      const domain = randomDomains[randomIndex];
+      return `${username}@${domain}`;
+    }
+
+    if (field === 'Phone Number') {
+      const phoneNumber = Math.floor(Math.random() * (9999999999 - 1000000000 + 1)) + 1000000000;
+      return phoneNumber.toString();
+    }
+
+    if (field === 'State') {
+      const randomStates = ['California', 'New York', 'Texas', 'Florida'];
+      const randomIndex = Math.floor(Math.random() * randomStates.length);
+      return randomStates[randomIndex];
+    }
+
+    // Add more specific cases for other text fields if needed
+
     return 'Random Text';
   };
 
   generateRandomNumber = (range) => {
-    // Generate a random number within the given range
     const { NumberMin, NumberMax } = range;
     return String(Math.floor(Math.random() * (NumberMax - NumberMin + 1)) + NumberMin);
   };
-  
 
   generateRandomDate = (range) => {
-    // Generate a random date within the given range, or a random date if range is undefined
     const { startDate, endDate } = range || {};
     const startTimestamp = startDate ? new Date(startDate).getTime() : 0;
     const endTimestamp = endDate ? new Date(endDate).getTime() : Date.now();
     const randomTimestamp = Math.random() * (endTimestamp - startTimestamp) + startTimestamp;
-    return new Date(randomTimestamp).toISOString().split('T')[0];
+    const randomDate = new Date(randomTimestamp);
+    const year = randomDate.getFullYear();
+    const month = String(randomDate.getMonth() + 1).padStart(2, '0');
+    const day = String(randomDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   render() {
