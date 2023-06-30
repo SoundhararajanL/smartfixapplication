@@ -71,29 +71,14 @@ const FormData = () => {
   };
 
   const handleSearch = () => {
-    const searchNumber = parseInt(searchValue.trim(), 10);
+    const searchValueLowercase = searchValue.toLowerCase().trim();
   
     const filteredTemplates = selectedTemplates.filter((template) =>
       template.fields.some((field) => {
-        const fieldName = field.name;
-        const fieldValue = field.value;
+        const fieldValue = field.value.toString().toLowerCase();
   
-        if (
-          fieldName === "Age" &&
-          !isNaN(searchNumber) &&
-          !isNaN(parseInt(fieldValue, 10))
-        ) {
-          // If the field is "Age" and both searchValue and fieldValue are numbers, perform direct comparison
-          return parseInt(fieldValue, 10) === searchNumber;
-        } else if (fieldName === "City" && fieldValue.toLowerCase() === searchValue.toLowerCase()) {
-          // If the field is "City" and matches the searchValue exactly (case-insensitive)
-          return true;
-        } else if (fieldValue.toLowerCase().includes(searchValue.toLowerCase())) {
-          // For other fields, perform case-insensitive substring search for string values
-          return true;
-        }
-  
-        return false;
+        // Perform an exact match search
+        return fieldValue === searchValueLowercase;
       })
     );
   
@@ -104,6 +89,8 @@ const FormData = () => {
       selectedTemplates.length > 0
     );
   };
+  
+  
   
   
   const handleColumnClick = (column) => {
