@@ -121,14 +121,15 @@ const TemplateList = () => {
       if (min > max) {
         isValid = false;
         errorMessages.push(`Serial No ${index + 1}: Minimum value should be less than maximum value`);
-      } else if (min === max) {
-        isValid = false;
-        errorMessages.push(`Serial No ${index + 1}: Minimum value should be less than maximum value`);
       }
+      //  else if (min === max) {
+      //   isValid = false;
+      //   errorMessages.push(`Serial No ${index + 1}: Minimum value should be less than maximum value`);
+      // }
     } else if (field.type === 'date') {
       const startDate = new Date(field.range.startDate);
       const endDate = new Date(field.range.endDate);
-      if (startDate > endDate) {
+      if (startDate > endDate) {  
         isValid = false;
         errorMessages.push(`Serial No ${index + 1}: Start date should be less than end date`);
       } else if (startDate.getTime() === endDate.getTime()) {

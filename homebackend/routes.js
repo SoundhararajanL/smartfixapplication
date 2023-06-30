@@ -3,6 +3,19 @@ const router = express.Router();
 const Template = require('./schema');
 const Form = require("./formSchema")
 const formData = require("./formSchema")
+const RandomForm = require('./randomSchema');
+
+// POST route for submitting random forms
+router.post('/random', async (req, res) => {
+  try {
+    const form = new RandomForm(req.body);
+    await form.save();
+    res.status(200).json({ message: 'Form submitted successfully' });
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    res.status(500).json({ message: 'Error submitting form' });
+  }
+});
 
 router.post('/home', async (req, res) => {
   try {

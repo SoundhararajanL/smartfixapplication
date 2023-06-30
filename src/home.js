@@ -135,7 +135,7 @@ function Home() {
         <div>
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn btn-primary-home"
             onClick={handleAddTemplate}
           >
             Create Job Card Template
@@ -166,7 +166,7 @@ function Home() {
                     </label>
                     <input
                       type="text"
-                      className="form-control mx-auto"
+                      className="form-control-home mx-auto"
                       placeholder="Enter template name"
                       value={jobCardTemplate.templateName}
                       onChange={(e) => {
@@ -197,7 +197,7 @@ function Home() {
                             <td>
                               <input
                                 type="text"
-                                className="form-control"
+                                className="form-control-home"
                                 placeholder="Field name"
                                 value={field.field}
                                 onChange={(e) => {
@@ -233,7 +233,7 @@ function Home() {
                                   <div className="col">
                                     <input
                                       type="number"
-                                      className="form-control"
+                                      className="form-control-home"
                                       placeholder="Min"
                                       value={field.range.NumberMin}
                                       onChange={(e) => {
@@ -247,7 +247,7 @@ function Home() {
                                   <div className="col">
                                     <input
                                       type="number"
-                                      className="form-control"
+                                      className="form-control-home"
                                       placeholder="Max"
                                       value={field.range.NumberMax}
                                       onChange={(e) => {
@@ -266,7 +266,7 @@ function Home() {
                                   <div className="col">
                                     <input
                                       type="date"
-                                      className="form-control"
+                                      className="form-control-home"
                                       value={field.range.startDate}
                                       onChange={(e) => {
                                         const updatedTemplates = [...jobCardTemplates];
@@ -279,7 +279,7 @@ function Home() {
                                   <div className="col">
                                     <input
                                       type="date"
-                                      className="form-control"
+                                      className="form-control-home"
                                       value={field.range.endDate}
                                       onChange={(e) => {
                                         const updatedTemplates = [...jobCardTemplates];
