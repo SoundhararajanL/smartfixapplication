@@ -156,6 +156,10 @@ const FormPage = () => {
   const handleDisplay = () => {
     navigate('/display', { state: { loginSuccess: true } });
   };
+  
+  const handleformData = () => {
+    navigate('/formdata', { state: { loginSuccess: true } });
+  };
 
   return (
     <div>
@@ -163,6 +167,9 @@ const FormPage = () => {
       <div>
         <button onClick={handleDisplay} type="button" className="btn btn-outline-primary">
           Back
+        </button >
+        <button onClick={handleformData} className='button-37'>
+          Form collection
         </button>
       </div>
       <div>

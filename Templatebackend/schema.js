@@ -23,9 +23,7 @@ const templateSchema = new mongoose.Schema({
         NumberMin: {
           type: Number,
           default: null,
-          required: function() {
-            return this.type === 'number';
-          }
+        
         },
         NumberMax: {
           type: Number,

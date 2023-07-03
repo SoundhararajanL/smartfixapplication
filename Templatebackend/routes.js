@@ -2,6 +2,20 @@ const express = require('express');
 const router = express.Router();
 const Template = require('./schema');
 const Form = require("./formSchema")
+const formData = require("./formSchema")
+const RandomForm = require('./randomSchema');
+
+// POST route for submitting random forms
+router.post('/random', async (req, res) => {
+  try {
+    const form = new RandomForm(req.body);
+    await form.save();
+    res.status(200).json({ message: 'Form submitted successfully' });
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    res.status(500).json({ message: 'Error submitting form' });
+  }
+});
 
 router.post('/home', async (req, res) => {
   try {
@@ -106,6 +120,8 @@ router.post('/form', async (req, res) => {
 });
 
 
+
+
 // Update template route
 router.put('/template/:templateName', async (req, res) => {
   const { templateName } = req.params;
@@ -132,5 +148,16 @@ router.put('/template/:templateName', async (req, res) => {
   }
 });
 
+
+router.get('/formdata', (req, res) => {
+  formData.find()
+    .then(templates => {
+      res.json(templates);
+    })
+    .catch(error => {
+      console.error('Error fetching templates:', error);
+      res.status(500).json({ error: 'An error occurred while fetching templates.' });
+    });
+});
 
 module.exports = router;

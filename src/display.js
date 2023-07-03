@@ -21,6 +21,8 @@ const TemplateList = () => {
   const [editingFields, setEditingFields] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
+  const [isTableVisible, setIsTableVisible] = useState(true);
+
 
   useEffect(() => {
     fetchTemplateNames();
@@ -64,6 +66,7 @@ const TemplateList = () => {
       setTemplateFields(fields);
       setEditingFields(updatedFields);
       setIsEditing(false);
+      setIsTableVisible(true); // Show the table
     } catch (error) {
       console.error('Error fetching template fields:', error);
     }
@@ -117,20 +120,21 @@ const TemplateList = () => {
       const max = parseFloat(field.range.NumberMax);
       if (min > max) {
         isValid = false;
-        errorMessages.push(`Field ${index + 1}: Minimum value should be less than maximum value`);
-      } else if (min === max) {
-        isValid = false;
-        errorMessages.push(`Field ${index + 1}: Minimum value should be less than maximum value`);
+        errorMessages.push(`Serial No ${index + 1}: Minimum value should be less than maximum value`);
       }
+      //  else if (min === max) {
+      //   isValid = false;
+      //   errorMessages.push(`Serial No ${index + 1}: Minimum value should be less than maximum value`);
+      // }
     } else if (field.type === 'date') {
       const startDate = new Date(field.range.startDate);
       const endDate = new Date(field.range.endDate);
-      if (startDate > endDate) {
+      if (startDate > endDate) {  
         isValid = false;
-        errorMessages.push(`Field ${index + 1}: Start date should be less than end date`);
+        errorMessages.push(`Serial No ${index + 1}: Start date should be less than end date`);
       } else if (startDate.getTime() === endDate.getTime()) {
         isValid = false;
-        errorMessages.push(`Field ${index + 1}: Start date should be less than end date`);
+        errorMessages.push(`Serial No ${index + 1}: Start date should be less than end date`);
       }
     }
   });
@@ -143,12 +147,14 @@ const TemplateList = () => {
   }
 
   try {
+    // Save template
     await axios.put(`http://localhost:3000/template/${selectedTemplateName}`, {
       fields: editingFields,
     });
     toast.success('Template updated successfully', { autoClose: 500 });
     setIsEditing(false);
     setTemplateFields([...editingFields]);
+    setIsTableVisible(false); 
   } catch (error) {
     console.error('Error updating template:', error);
     toast.error('Failed to update template');
@@ -158,7 +164,7 @@ const TemplateList = () => {
   const handleAddField = () => {
     const newField = {
       field: '',
-      type: 'text',
+      type: '',
       required: false,
       range: {
         NumberMin: 0,
@@ -192,7 +198,11 @@ const TemplateList = () => {
     navigate('/form', { state: { loginSuccess: true } });
   };
 
+  
   const formatDate = (dateString) => {
+    if (dateString === null) {
+      return ''; // Return empty string for null dates
+    }
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -200,8 +210,10 @@ const TemplateList = () => {
     return `${year}-${month}-${day}`;
   };
 
+  
+
   const renderTemplateFields = () => {
-    if (selectedTemplateName) {
+    if (selectedTemplateName && isTableVisible) {
       return (
         <div className="container mt-4">
           <div className="d-flex justify-content-between align-items-center mb-2">
@@ -215,19 +227,21 @@ const TemplateList = () => {
             )}
           </div>
           <table className="display-table">
-            <thead className="thead">
-              <tr>
-                <th>Field</th>
-                <th>Type</th>
-                <th>Range</th>
-                <th>Required</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+          <thead className="thead">
+            <tr>
+              <th>Serial No.</th>
+              <th>Field</th>
+              <th>Type</th>
+              <th>Range</th>
+              <th>Required</th>
+              <th>Action</th>
+            </tr>
+          </thead>
             <tbody className="tbody">
               {isEditing ? (
                 editingFields.map((field, index) => (
                   <tr key={index}>
+                    <td>{index + 1}</td>
                     <td>
                       <input
                         type="text"
@@ -241,6 +255,7 @@ const TemplateList = () => {
                         value={field.type}
                         onChange={(e) => handleFieldChange(index, 'type', e.target.value)}
                       >
+                        <option value="" hidden>--Select--</option>
                         <option value="text">Text</option>
                         <option value="number">Number</option>
                         <option value="date">Date</option>
@@ -311,6 +326,7 @@ const TemplateList = () => {
               ) : (
                 templateFields.map((field, index) => (
                   <tr key={index}>
+                    <td>{index + 1}</td>
                     <td>{field.field}</td>
                     <td>{field.type}</td>
                     <td>
