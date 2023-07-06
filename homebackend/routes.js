@@ -121,43 +121,75 @@ router.post('/form', async (req, res) => {
 
 
 
+router.get('/formdata', async (req, res) => {
+  const datasize = 100;
+  let allData = [];
 
-// Update template route
-router.put('/template/:templateName', async (req, res) => {
-  const { templateName } = req.params;
-  const { fields } = req.body;
+  let page = 1;
+  let templates = [];
 
   try {
-    // Find the template by name
-    const template = await Template.findOne({ templateName });
+    do {
+      templates = await formData.find()
+        .skip((page - 1) * datasize)
+        .limit(datasize);
+        
+      allData = allData.concat(templates);
+      page++;
+    } while (templates.length === datasize);
 
-    if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
-    }
-
-    // Update the fields
-    template.fields = fields;
-
-    // Save the updated template
-    await template.save();
-
-    res.json({ message: 'Template updated successfully' });
+    res.json(allData);
   } catch (error) {
-    console.error('Error updating template:', error);
-    res.status(500).json({ error: 'Failed to update template' });
+    console.error('Error fetching templates:', error);
+    res.status(500).json({ error: 'An error occurred while fetching templates.' });
   }
 });
 
 
-router.get('/formdata', (req, res) => {
-  formData.find()
-    .then(templates => {
-      res.json(templates);
-    })
-    .catch(error => {
-      console.error('Error fetching templates:', error);
-      res.status(500).json({ error: 'An error occurred while fetching templates.' });
-    });
+
+
+router.get('/templates', async (req, res) => {
+  try {
+    const templates = await formData.distinct('templateName');
+    const templateCounts = [];
+
+    for (const template of templates) {
+      const count = await formData.countDocuments({ templateName: template });
+      templateCounts.push({ templateName: template, count });
+    }
+
+    res.json(templateCounts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
+router.get('/templates/:templateName/:page', async (req, res) => {
+  try {
+    const { templateName, page } = req.params;
+    const itemsPerPage = 100;
+
+    const totalCount = await formData.countDocuments({ templateName });
+    const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+    const skip = (page - 1) * itemsPerPage;
+    const templates = await formData
+      .find({ templateName })
+      .skip(skip)
+      .limit(itemsPerPage)
+      .sort({ _id: 1 });
+
+    res.json({ templates, totalCount, totalPages });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+
+
+
+
 
 module.exports = router;

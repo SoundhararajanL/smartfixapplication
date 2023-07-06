@@ -9,7 +9,7 @@ class RandomFormGenerator extends React.Component {
 
     try {
       const apiUrl = 'http://localhost:3000/random'; // Replace with your API endpoint
-      const templateName = 'soundhar';
+      const templateName = 'new';
       const fields = [
         { field: 'Name', type: 'text' },
         { field: 'age', type: 'number', range: { NumberMin: 18, NumberMax: 50 } },

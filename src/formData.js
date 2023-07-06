@@ -5,6 +5,7 @@ import { faChevronUp, faChevronDown, faSearch, faSadTear } from '@fortawesome/fr
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Table, Pagination } from 'react-bootstrap';
 
+
 const FormData = () => {
   const [templates, setTemplates] = useState([]);
   const [selectedTemplateName, setSelectedTemplateName] = useState('');
@@ -20,52 +21,83 @@ const FormData = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 100;
   const [searchName, setSearchName] = useState('');
+  const [templateNames, setTemplateNames] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPageData, setCurrentPageData] = useState([]);
+  const [templateCounts, setTemplateCounts] = useState([]); // Initialize templateCounts state variable
 
   useEffect(() => {
-    // Fetch templates from MongoDB collection
+    // Fetch template names and counts from the server
     axios
-      .get('http://localhost:3000/formdata')
+      .get('http://localhost:3000/templates')
       .then((response) => {
         const fetchedTemplates = response.data;
-        setTemplates(fetchedTemplates);
-
-        // Generate serial numbers for each template
-        const serials = fetchedTemplates.map((_, index) => index + 1);
-        setSerialNumbers(serials);
+        const names = fetchedTemplates.map((template) => template.templateName);
+        const counts = fetchedTemplates.map((template) => ({
+          templateName: template.templateName,
+          count: template.count,
+        }));
+        setTemplateNames(names);
+        setTemplateCounts(counts);
       })
       .catch((error) => {
-        console.error('Error fetching templates:', error);
+        console.error('Error fetching template names and counts:', error);
       });
   }, []);
 
   useEffect(() => {
-    const selected = templates.filter(
-      (template) => template.templateName === selectedTemplateName
-    );
-    setSelectedTemplates(selected);
-    setShowTable(true);
-    setCurrentPage(1);
-  }, [selectedTemplateName, templates]);
+    if (selectedTemplateName) {
+      const templateCount = templateCounts.find((template) => template.templateName === selectedTemplateName)?.count || 0;
+      const totalPages = Math.ceil(templateCount / itemsPerPage);
+      setTotalPages(totalPages);
+      fetchData(selectedTemplateName, currentPage, templateCount);
+    }
+  }, [selectedTemplateName, currentPage, templateCounts, totalPages]);
+  
+  
+const fetchData = (templateName, page) => {
+  axios
+    .get(`http://localhost:3000/templates/${templateName}/${page}`)
+    .then((response) => {
+      const { templates, totalPages } = response.data;
+
+      // If the current page is greater than 1, concatenate the new templates with the existing ones
+      const updatedTemplates = page > 1 ? [...selectedTemplates, ...templates] : templates;
+
+      setTemplates(updatedTemplates);
+      setSelectedTemplates(updatedTemplates);
+      setShowTable(true);
+      setTotalPages(totalPages);
+    })
+    .catch((error) => {
+      console.error('Error fetching template data:', error);
+    });
+};
+  
 
   const handleTemplateChange = (event) => {
     setSelectedTemplateName(event.target.value);
     setSearchValue('');
     setSearchResult([]);
     setSearchError(false);
+    setCurrentPage(1); // Reset pagination when template is changed
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchData(selectedTemplateName, page);
   };
 
   const getTemplateOptions = () => {
-    const uniqueTemplateNames = Array.from(
-      new Set(templates.map((template) => template.templateName))
-    );
-
-    return uniqueTemplateNames.map((templateName) => (
-      <option key={templateName} value={templateName}>
-        {templateName}
+    return templateCounts.map((template) => (
+      <option key={template.templateName} value={template.templateName}>
+        {template.templateName} ({template.count})
       </option>
     ));
   };
+  
 
+  
   const handleForm = () => {
     navigate('/form', { state: { loginSuccess: true } });
   };
@@ -155,6 +187,10 @@ const FormData = () => {
   };
 
   const renderTemplateTable = () => {
+    if (!selectedTemplates) {
+      return null;
+    }
+  
     const templateFields = selectedTemplates.reduce((fields, template) => {
       template.fields.forEach((field) => {
         if (!fields.includes(field.field)) {
@@ -184,17 +220,24 @@ const FormData = () => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = sortedRows.slice(indexOfFirstItem, indexOfLastItem);
     const renderPageNumbers = () => {
-      const pageNumbers = Math.ceil(sortedRows.length / itemsPerPage);
-      const maxPageNumbersToShow = 3; // Maximum number of page numbers to display
-
-      if (pageNumbers <= maxPageNumbersToShow) {
+      const templateCount =
+        templateCounts.find((template) => template.templateName === selectedTemplateName)?.count || 0;
+      const totalPages = Math.ceil(templateCount / itemsPerPage);
+      const maxPageNumbersToShow = 3;
+    
+      if (totalPages <= 1) {
+        return null; // If there is only one page or less, no need to render pagination
+      }
+    
+    
+      if (totalPages <= maxPageNumbersToShow) {
         return (
           <Pagination className="pagination">
-            {Array.from({ length: pageNumbers }).map((_, index) => (
+            {Array.from({ length: totalPages }).map((_, index) => (
               <Pagination.Item
                 key={index + 1}
                 active={currentPage === index + 1}
-                onClick={() => setCurrentPage(index + 1)}
+                onClick={() => handlePageChange(index + 1)}
               >
                 {index + 1}
               </Pagination.Item>
@@ -202,40 +245,35 @@ const FormData = () => {
           </Pagination>
         );
       }
-
+    
       const pageNumbersToShow = [];
       const firstPageNumber = Math.max(currentPage - 1, 1);
-      const lastPageNumber = Math.min(firstPageNumber + maxPageNumbersToShow - 1, pageNumbers);
-
+      const lastPageNumber = Math.min(firstPageNumber + maxPageNumbersToShow - 1, totalPages);
+    
       for (let i = firstPageNumber; i <= lastPageNumber; i++) {
-        pageNumbersToShow.push(i);
+        pageNumbersToShow.push(
+          <Pagination.Item
+            key={i}
+            active={currentPage === i}
+            onClick={() => handlePageChange(i)}
+          >
+            {i}
+          </Pagination.Item>
+        );
       }
-
+    
       return (
         <Pagination className="pagination">
           {firstPageNumber > 1 && (
-            <Pagination.Item onClick={() => setCurrentPage(currentPage - 1)}>
-              Previous
-            </Pagination.Item>
+            <Pagination.Prev onClick={() => handlePageChange(firstPageNumber - 1)} />
           )}
-          {pageNumbersToShow.map((pageNumber) => (
-            <Pagination.Item
-              key={pageNumber}
-              active={currentPage === pageNumber}
-              onClick={() => setCurrentPage(pageNumber)}
-            >
-              {pageNumber}
-            </Pagination.Item>
-          ))}
-          {lastPageNumber < pageNumbers && (
-            <Pagination.Item onClick={() => setCurrentPage(currentPage + 1)}>
-              Next
-            </Pagination.Item>
+          {pageNumbersToShow}
+          {lastPageNumber < totalPages && (
+            <Pagination.Next onClick={() => handlePageChange(lastPageNumber + 1)} />
           )}
         </Pagination>
       );
     };
-
     const handleSortClick = (column) => {
       if (sortedColumn === column) {
         setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -244,7 +282,11 @@ const FormData = () => {
         setSortOrder('asc');
       }
       setCurrentPage(1); // Reset to first page after sorting
+    
+      const sortedTemplates = sortRows(selectedTemplates); // Sort the templates based on the selected column and sort order
+      setSelectedTemplates(sortedTemplates); // Update the selected templates with the sorted order
     };
+    
 
     return (
       <>
