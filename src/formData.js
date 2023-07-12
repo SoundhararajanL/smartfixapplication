@@ -53,9 +53,18 @@ const FormData = () => {
       fetchData(selectedTemplateName, currentPage, templateCount);
     }
   }, [selectedTemplateName, currentPage, templateCounts, totalPages]);
+
   
-  
+let fetchedPages = [];
+
 const fetchData = (templateName, page) => {
+  if (fetchedPages.includes(page)) {
+    // Page has already been fetched, do not make another request
+    return;
+  }
+
+  fetchedPages.push(page);
+
   axios
     .get(`http://localhost:3000/templates/${templateName}/${page}`)
     .then((response) => {
@@ -68,12 +77,14 @@ const fetchData = (templateName, page) => {
       setSelectedTemplates(updatedTemplates);
       setShowTable(true);
       setTotalPages(totalPages);
+      const serials = updatedTemplates.map((_, index) => index + 1);
+      setSerialNumbers(serials);
     })
     .catch((error) => {
       console.error('Error fetching template data:', error);
     });
 };
-  
+
 
   const handleTemplateChange = (event) => {
     setSelectedTemplateName(event.target.value);

@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 class RandomFormGenerator extends React.Component {
   handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     try {
       const apiUrl = 'http://localhost:3000/random'; // Replace with your API endpoint
       const templateName = 'new';
@@ -32,48 +32,49 @@ class RandomFormGenerator extends React.Component {
         { field: 'Date of Birth', type: 'date' },
       ];
   
-      const batchSize = 100; // Number of forms to send in each batch
+       const batchSize = 1; // Number of forms to send in each batch
       const totalForms = 10000;
       const batches = Math.ceil(totalForms / batchSize);
-
+  
       for (let i = 0; i < batches; i++) {
-        const forms = Array.from({ length: batchSize }, () => {
-          const formValues = fields.map(({ field, type, range }) => {
-            let value = '';
-
-            switch (type) {
-              case 'text':
-                value = this.generateRandomText(field);
-                break;
-              case 'number':
-                value = this.generateRandomNumber(range);
-                break;
-              case 'date':
-                value = this.generateRandomDate(range);
-                break;
-              default:
-                value = '';
-            }
+        const formSubmissions = fields.reduce((submissions, { field, type, range }) => {
+          let value = '';
   
-            return { [field]: value };
-          });
+          switch (type) {
+            case 'text':
+              value = this.generateRandomText(field);
+              break;
+            case 'number':
+              value = this.generateRandomNumber(range);
+              break;
+            case 'date':
+              value = this.generateRandomDate(range);
+              break;
+            default:
+              value = '';
+          }
   
-          return { templateName, formSubmissions: formValues };
-        });
-        
-        await Promise.all(
-          forms.map(async (form) => {
-            await axios.post(apiUrl, form);
-          })
-        );
+          return {
+            ...submissions,
+            [field]: value
+          };
+        }, {});
+  
+        const form = {
+          templateName,
+          formSubmissions
+        };
+  
+        await axios.post(apiUrl, form);
       }
-
+  
       toast.success('Forms submitted successfully!');
     } catch (error) {
       console.error('Error submitting forms:', error);
       toast.error('Error submitting forms');
     }
   };
+  
   
   generateRandomText = (field) => {
     if (field === 'Name') {

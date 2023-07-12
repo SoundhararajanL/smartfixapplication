@@ -164,6 +164,9 @@ router.get('/templates', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+
+
 router.get('/templates/:templateName/:page', async (req, res) => {
   try {
     const { templateName, page } = req.params;
@@ -175,9 +178,10 @@ router.get('/templates/:templateName/:page', async (req, res) => {
     const skip = (page - 1) * itemsPerPage;
     const templates = await formData
       .find({ templateName })
+      .sort({"_id":1})
       .skip(skip)
-      .limit(itemsPerPage)
-      .sort({ _id: 1 });
+      .limit(itemsPerPage);
+      
 
     res.json({ templates, totalCount, totalPages });
   } catch (error) {
