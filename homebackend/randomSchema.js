@@ -5,4 +5,4 @@ const randomSchema = new mongoose.Schema({
   formSubmissions: mongoose.Schema.Types.Mixed
 });
 
-module.exports = mongoose.model('FormCollections', randomSchema);
+module.exports = mongoose.model('formcollection', randomSchema);

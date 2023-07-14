@@ -8,7 +8,7 @@ class RandomFormGenerator extends React.Component {
     event.preventDefault();
   
     try {
-      const apiUrl = 'http://localhost:3000/random'; // Replace with your API endpoint
+      const apiUrl = 'http://localhost:3000/random';
       const templateName = 'new';
       const fields = [
         { field: 'Name', type: 'text' },
@@ -32,41 +32,41 @@ class RandomFormGenerator extends React.Component {
         { field: 'Date of Birth', type: 'date' },
       ];
   
-       const batchSize = 1; // Number of forms to send in each batch
+       const batchSize = 1; 
       const totalForms = 10000;
       const batches = Math.ceil(totalForms / batchSize);
   
-      for (let i = 0; i < batches; i++) {
-        const formSubmissions = fields.reduce((submissions, { field, type, range }) => {
-          let value = '';
-  
-          switch (type) {
-            case 'text':
-              value = this.generateRandomText(field);
-              break;
-            case 'number':
-              value = this.generateRandomNumber(range);
-              break;
-            case 'date':
-              value = this.generateRandomDate(range);
-              break;
-            default:
-              value = '';
-          }
-  
-          return {
-            ...submissions,
-            [field]: value
-          };
-        }, {});
-  
-        const form = {
-          templateName,
-          formSubmissions
+       for (let i = 0; i < batches; i++) {
+      const formSubmissions = fields.reduce((submissions, { field, type, range }) => {
+        let value = '';
+
+        switch (type) {
+          case 'text':
+            value = this.generateRandomText(field);
+            break;
+          case 'number':
+            value = Number(this.generateRandomNumber(range));
+            break;
+          case 'date':
+            value = new Date(this.generateRandomDate(range));
+            break;
+          default:
+            value = '';
+        }
+
+        return {
+          ...submissions,
+          [field]: value
         };
-  
-        await axios.post(apiUrl, form);
-      }
+      }, {});
+
+      const form = {
+        templateName,
+        formSubmissions
+      };
+
+      await axios.post(apiUrl, form);
+    }
   
       toast.success('Forms submitted successfully!');
     } catch (error) {
@@ -99,7 +99,7 @@ class RandomFormGenerator extends React.Component {
 
     if (field === 'Phone Number') {
       const phoneNumber = Math.floor(Math.random() * (9999999999 - 1000000000 + 1)) + 1000000000;
-      return phoneNumber.toString();
+      return phoneNumber;
     }
 
     if (field === 'State') {
@@ -108,14 +108,14 @@ class RandomFormGenerator extends React.Component {
       return randomStates[randomIndex];
     }
 
-    // Add more specific cases for other text fields if needed
+   
 
     return 'Random Text';
   };
 
   generateRandomNumber = (range) => {
     const { NumberMin, NumberMax } = range;
-    return String(Math.floor(Math.random() * (NumberMax - NumberMin + 1)) + NumberMin);
+    return Math.floor(Math.random() * (NumberMax - NumberMin + 1)) + NumberMin;
   };
 
   generateRandomDate = (range) => {
@@ -124,11 +124,11 @@ class RandomFormGenerator extends React.Component {
     const endTimestamp = endDate ? new Date(endDate).getTime() : Date.now();
     const randomTimestamp = Math.random() * (endTimestamp - startTimestamp) + startTimestamp;
     const randomDate = new Date(randomTimestamp);
-    const year = randomDate.getFullYear();
-    const month = String(randomDate.getMonth() + 1).padStart(2, '0');
-    const day = String(randomDate.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  
+    return randomDate;
   };
+  
+  
 
   render() {
     return (
