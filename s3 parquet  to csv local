@@ -1,0 +1,80 @@
+
+
+import pandas as pd
+import pyarrow.parquet as pq
+import s3fs
+start_date="2022-05-11"
+end_date="2022-05-17"
+
+def check_dates_in_range(csv_file, start_date, end_date):
+    df = pd.read_csv(csv_file, nrows=1)
+    column_dates = pd.to_datetime(df.columns[1:], errors='coerce')
+
+    for date in pd.date_range(start_date, end_date):
+        if date in column_dates:
+            print(f"{date}: Yes")
+            #######################
+
+            input_date = str(date).split()[0]
+            # Set your AWS credentials
+            AWS_ACCESS_KEY_ID = 'AKIA3MWKM5TMBQEENH27'
+            AWS_SECRET_ACCESS_KEY = 'Gdnp5c5Akxrz7KgZ/VBON+lcD89gMM0nj0EjJxLX'
+
+            # Set the S3 bucket and folder path
+            BUCKET_NAME = 'smartfix-rds-to-s3'
+            FOLDER_PATH = 'smartfix-snapshots-demo2/smartfix_db/public.machines_sensorvaluesresample/1'
+
+            def get_filename_for_date(csv_file, date_str):
+                df = pd.read_csv(csv_file)
+                date_column_index = df.columns.get_loc(date_str)
+                filenames = []
+
+                for _, row in df.iterrows():
+                    if row[date_column_index] > 0:
+                        filenames.append(row[0])
+
+                return filenames
+
+            if __name__ == "__main__":
+                csv_file = "frequency_counts.csv"
+                date_to_check = input_date
+                result = get_filename_for_date(csv_file, date_to_check)
+
+                if result:
+                    print(result)
+                else:
+                    print("no filenames")
+
+                s3 = s3fs.S3FileSystem(anon=False,
+                                       key=AWS_ACCESS_KEY_ID,
+                                       secret=AWS_SECRET_ACCESS_KEY)
+
+                combined_dfs = []
+
+                for file_name in result:
+                    file_path = f"{BUCKET_NAME}/{FOLDER_PATH}/{file_name}"
+                    table = pq.ParquetDataset(file_path, filesystem=s3).read()
+                    df = table.to_pandas()
+                    combined_dfs.append(df)
+
+                combined_df = pd.concat(combined_dfs)
+                combined_df["resample_timestamp"] = pd.to_datetime(combined_df["resample_timestamp"])
+
+                date_to_check = pd.to_datetime(date_to_check).date()
+                filtered_df = combined_df.loc[combined_df["resample_timestamp"].dt.date == date_to_check]
+
+                print(filtered_df)
+                filtered_df.to_csv(f'machine_resample_{date_to_check}.csv', index=False)
+
+
+
+            #######################
+        else:
+            print(f"{date}: No")
+
+if __name__ == "__main__":
+    csv_file = "frequency_counts.csv"
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
+    check_dates_in_range(csv_file, start_date, end_date)
