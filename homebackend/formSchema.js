@@ -1,22 +1,8 @@
 const mongoose = require('mongoose');
-const formValues = new mongoose.Schema({
-    templateName: {
-      type: String,
-      required: true,
-    },
-    fields: [
-      {
-        field: {
-          type: String,
-          required: true,
-        },
-        
-        value: {
-          type: String,
-          required:true,
-        },
-      },
-    ],
-  });
-  
-  module.exports = mongoose.model('form', formValues);
+
+const formValuesSchema = new mongoose.Schema({
+  templateName: String,
+  formSubmissions: mongoose.Schema.Types.Mixed,
+});
+
+module.exports = mongoose.model('FromData', formValuesSchema);

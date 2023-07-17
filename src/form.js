@@ -105,21 +105,22 @@ const FormPage = () => {
   
   
   
-
   const handleSubmit = (event) => {
     event.preventDefault();
     if (selectedTemplate) {
       const requiredFields = fields.filter((field) => field.required);
       const missingRequiredFields = requiredFields.filter((field) => !formValues[field.field]);
-
+  
       if (missingRequiredFields.length > 0) {
         toast.error('Please fill in all the required fields.');
       } else {
+        const formData = {
+          templateName: selectedTemplate,
+          fields: formValues,
+        };
+  
         axios
-          .post('http://localhost:3000/form', {
-            templateName: selectedTemplate,
-            fields: Object.entries(formValues).map(([field, value]) => ({ field, value })),
-          })
+          .post('http://localhost:3000/form', formData)
           .then((response) => {
             console.log('Form data submitted successfully:', response.data);
             setFormValues({});
@@ -134,6 +135,8 @@ const FormPage = () => {
       }
     }
   };
+  
+  
 
   const validateEmail = (email) => {
     // Use a comprehensive regular expression for email validation

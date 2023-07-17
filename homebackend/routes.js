@@ -102,22 +102,27 @@ router.delete('/delete/:templateName', async (req, res) => {
 });
 
 // Save template route
+// Assuming you have an Express route defined for handling form submissions
+
 router.post('/form', async (req, res) => {
   try {
     const { templateName, fields } = req.body;
 
-    const form = new Form({
+    // Assuming you have a Mongoose model named 'FormValues' defined
+
+    // Create a new document in the 'FormValues' collection
+    const formValues = await Form.create({
       templateName,
-      fields,
+      formSubmissions: fields,
     });
 
-    const savedForm = await form.save();
-    res.status(200).json(savedForm);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error occurred while saving form data!' });
+    res.status(200).json(formValues);
+  } catch (error) {
+    console.error('Error saving form data:', error);
+    res.status(500).json({ error: 'An error occurred while saving the form data.' });
   }
 });
+
 
 
 
