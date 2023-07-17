@@ -435,3 +435,9 @@ height: 100%;
   margin-top: -5%;
 }
 
+.chart{
+  width: '50%';
+  height: '50%';
+  margin-Left:'10%' ;
+  margin-Top:'10%';
+}

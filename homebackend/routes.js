@@ -4,6 +4,27 @@ const Template = require('./schema');
 const Form = require("./formSchema")
 const formData = require("./formSchema")
 const RandomForm = require('./randomSchema');
+const chart = require("./formSchema")
+
+router.get('/templateCounts', async (req, res) => {
+  try {
+    // Aggregate to get the counts of each templateName
+    const templateCounts = await chart.aggregate([
+      {
+        $group: {
+          _id: '$templateName',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    res.json(templateCounts);
+  } catch (err) {
+    console.error('Error fetching template name counts:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 // POST route for submitting random forms
 router.post('/random', async (req, res) => {
