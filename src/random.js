@@ -9,7 +9,7 @@ class RandomFormGenerator extends React.Component {
   
     try {
       const apiUrl = 'http://localhost:3000/random';
-      const templateName = 'new';
+      const templateName = 'soundhar';
       const fields = [
         { field: 'Name', type: 'text' },
         { field: 'age', type: 'number', range: { NumberMin: 18, NumberMax: 50 } },
@@ -32,12 +32,12 @@ class RandomFormGenerator extends React.Component {
         { field: 'Date of Birth', type: 'date' },
       ];
   
-       const batchSize = 1; 
+       const batchSize = 1000; 
       const totalForms = 10000;
       const batches = Math.ceil(totalForms / batchSize);
   
-       for (let i = 0; i < batches; i++) {
-      const formSubmissions = fields.reduce((submissions, { field, type, range }) => {
+      for (let i = 0; i < batches; i++) {
+        const formSubmissions = fields.reduce((submissions, { field, type, range }) => {
         let value = '';
 
         switch (type) {
@@ -48,7 +48,7 @@ class RandomFormGenerator extends React.Component {
             value = Number(this.generateRandomNumber(range));
             break;
           case 'date':
-            value = new Date(this.generateRandomDate(range));
+            value = this.generateRandomDate(range);
             break;
           default:
             value = '';
@@ -125,8 +125,10 @@ class RandomFormGenerator extends React.Component {
     const randomTimestamp = Math.random() * (endTimestamp - startTimestamp) + startTimestamp;
     const randomDate = new Date(randomTimestamp);
   
-    return randomDate;
+    // Serialize the randomDate to a string that MongoDB understands
+    return randomDate.toISOString(); // Converts to ISO 8601 format (e.g., "2023-07-20T12:00:00.000Z")
   };
+  
   
   
 

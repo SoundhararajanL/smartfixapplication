@@ -47,21 +47,21 @@ const FormPage = () => {
   };
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-  
     const field = fields.find((field) => field.field.toLowerCase() === name.toLowerCase());
+
     if (field && field.required && field.type === 'email') {
       // email validation code
     } else if (field && field.type === 'number' && field.range) {
       const { NumberMin, NumberMax } = field.range;
       const enteredNumber = Number(value);
-  
+
       if ((NumberMin !== null && enteredNumber < NumberMin) || (NumberMax !== null && enteredNumber > NumberMax)) {
         const errorMessage = NumberMin !== null && NumberMax !== null
           ? `Please enter a value between ${NumberMin} and ${NumberMax}.`
           : NumberMin !== null
             ? `Please enter a value greater than or equal to ${NumberMin}.`
             : `Please enter a value less than or equal to ${NumberMax}.`;
-  
+
         event.target.setCustomValidity(errorMessage);
       } else {
         event.target.setCustomValidity('');
@@ -71,24 +71,24 @@ const FormPage = () => {
       const selectedDate = new Date(value);
       const minDate = startDate ? new Date(startDate) : null;
       const maxDate = endDate ? new Date(endDate) : null;
-  
+
       const formatDate = (date) => {
         const day = date.getDate().toString().padStart(2, '0');
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear().toString();
         return `${day}-${month}-${year}`;
       };
-  
+
       if ((minDate && selectedDate < minDate) || (maxDate && selectedDate > maxDate)) {
         const formattedStartDate = minDate ? formatDate(minDate) : null;
         const formattedEndDate = maxDate ? formatDate(maxDate) : null;
-  
+
         const errorMessage = formattedStartDate && formattedEndDate
           ? `Please enter a date between ${formattedStartDate} and ${formattedEndDate}.`
           : formattedStartDate
             ? `Please enter a date greater than or equal to ${formattedStartDate}.`
             : `Please enter a date less than or equal to ${formattedEndDate}.`;
-  
+
         event.target.setCustomValidity(errorMessage);
       } else {
         event.target.setCustomValidity('');
@@ -96,15 +96,13 @@ const FormPage = () => {
     } else {
       event.target.setCustomValidity('');
     }
-  
+
     setFormValues((prevValues) => ({
       ...prevValues,
       [name]: value,
     }));
   };
-  
-  
-  
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (selectedTemplate) {
@@ -114,9 +112,20 @@ const FormPage = () => {
       if (missingRequiredFields.length > 0) {
         toast.error('Please fill in all the required fields.');
       } else {
+        // Format date fields to JavaScript Date objects
+        const formattedFormValues = {};
+        fields.forEach((field) => {
+          if (field.type === 'date' && formValues[field.field]) {
+            const selectedDate = new Date(formValues[field.field]);
+            formattedFormValues[field.field] = selectedDate;
+          } else {
+            formattedFormValues[field.field] = formValues[field.field];
+          }
+        });
+  
         const formData = {
           templateName: selectedTemplate,
-          fields: formValues,
+          fields: formattedFormValues,
         };
   
         axios
@@ -124,7 +133,10 @@ const FormPage = () => {
           .then((response) => {
             console.log('Form data submitted successfully:', response.data);
             setFormValues({});
-            toast.success('Form registered successfully', { position: toast.POSITION.TOP_CENTER, autoClose: 1000 });
+            toast.success('Form registered successfully', {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: 1000,
+            });
             setTimeout(() => {
               window.location.reload(); // Reload the page after a delay (e.g., 2 seconds)
             }, 2000); // Reload the page
@@ -137,6 +149,8 @@ const FormPage = () => {
   };
   
   
+
+
 
   const validateEmail = (email) => {
     // Use a comprehensive regular expression for email validation
@@ -159,7 +173,7 @@ const FormPage = () => {
   const handleDisplay = () => {
     navigate('/display', { state: { loginSuccess: true } });
   };
-  
+
   const handleformData = () => {
     navigate('/formdata', { state: { loginSuccess: true } });
   };

@@ -4,28 +4,128 @@ const Template = require('./schema');
 const Form = require("./formSchema")
 const formData = require("./formSchema")
 const RandomForm = require('./randomSchema');
-const chart = require("./formSchema")
+const FormCollection  = require('./randomSchema');
+// const FormCollection = require("./formSchema")
 
-router.get('/templateCounts', async (req, res) => {
+router.get('/api/templates', (req, res) => {
+  FormCollection.find({}, 'templateName', (err, templates) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+    } else {
+      res.json(templates);
+    }
+  });
+});
+
+router.get('/api/templates/:templateName/fields', (req, res) => {
+  const { templateName } = req.params;
+
+  FormCollection.findOne({ templateName }, (err, template) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+    } else if (!template) {
+      res.status(404).json({ error: 'Template not found' });
+    } else {
+      const fields = Object.keys(template.formSubmissions);
+      res.json(fields);
+    }
+  });
+});
+
+router.get('/api/templates/:templateName/data/:fieldName', (req, res) => {
+  const { templateName, fieldName } = req.params;
+
+  FormCollection.find({ templateName }, `formSubmissions.${fieldName}`, (err, submissions) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+    } else if (submissions.length === 0) {
+      res.status(404).json({ error: 'Template not found' });
+    } else {
+      const fieldData = submissions.map((submission) => submission.formSubmissions[fieldName]);
+      const stateCounts = {};
+      fieldData.forEach((stateValue) => {
+        stateCounts[stateValue] = (stateCounts[stateValue] || 0) + 1;
+      });
+      res.json(stateCounts);
+    }
+  });
+});
+// filter data
+router.get('/api/templates/:templateName/filtered-data', (req, res) => {
+  const { templateName } = req.params;
+  const { fieldName, startAge, endAge } = req.query;
+
+  const pipeline = [
+    { $match: { templateName } },
+    {
+      $project: {
+        formSubmissions: 1,
+        age: { $toInt: '$formSubmissions.age' }, // Convert age to integer
+      },
+    },
+    { $match: { age: { $gte: parseInt(startAge), $lte: parseInt(endAge) } } }, // Filter by age range
+    {
+      $group: {
+        _id: `$formSubmissions.${fieldName}`,
+        count: { $sum: 1 },
+      },
+    },
+  ];
+
+  FormCollection.aggregate(pipeline, (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+    } else if (data.length === 0) {
+      res.status(404).json({ error: 'Data not found' });
+    } else {
+      const fieldCounts = {};
+      data.forEach(({ _id, count }) => {
+        fieldCounts[_id] = count;
+      });
+      res.json(fieldCounts);
+    }
+  });
+});
+// ageMinMax
+
+// Define the GET API endpoint to fetch the minimum and maximum age values
+router.get('/api/age-range', async (req, res) => {
   try {
-    // Aggregate to get the counts of each templateName
-    const templateCounts = await chart.aggregate([
+    // Find the minimum and maximum age using the $group stage in aggregation
+    const result = await FormCollection.aggregate([
       {
         $group: {
-          _id: '$templateName',
-          count: { $sum: 1 },
+          _id: null,
+          minAge: { $min: '$formSubmissions.age' },
+          maxAge: { $max: '$formSubmissions.age' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
         },
       },
     ]);
 
-    res.json(templateCounts);
+    if (result.length > 0) {
+      const { minAge, maxAge } = result[0];
+      // console.log('Minimum Age:', minAge);
+      // console.log('Maximum Age:', maxAge);
+      res.json({ minAge, maxAge });
+    } else {
+      res.status(404).json({ message: 'No data found' });
+    }
   } catch (err) {
-    console.error('Error fetching template name counts:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-
+// 
 // POST route for submitting random forms
 router.post('/random', async (req, res) => {
   try {

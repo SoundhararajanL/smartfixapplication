@@ -1,0 +1,6 @@
+{
+    "name": "Jeff Johnson",
+    "email": "jeff@gmail.com",
+    "phone": "5555555555",
+    "date_added": { "$date": "2014-01-22T14:56:59.301Z" }
+}

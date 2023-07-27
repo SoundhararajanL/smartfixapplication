@@ -10,6 +10,7 @@ import Home from './home';
 import TemplateList from './display';
 import FormPage from './form';
 import FormData from './formData';
+import RandomFormGenerator from './random';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -21,7 +22,7 @@ ReactDOM.render(
       <Route path="/display" element={<TemplateList />} />
       <Route path="/form" element={<FormPage />} />
       <Route path="/formdata" element={<FormData/>}/>
-      
+      <Route path="/random" element={<RandomFormGenerator/>}/>
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

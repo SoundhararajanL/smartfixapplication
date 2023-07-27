@@ -5,4 +5,4 @@ const formValuesSchema = new mongoose.Schema({
   formSubmissions: mongoose.Schema.Types.Mixed,
 });
 
-module.exports = mongoose.model('FromData', formValuesSchema);
+module.exports = mongoose.model('FormData', formValuesSchema);
