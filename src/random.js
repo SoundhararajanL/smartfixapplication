@@ -29,10 +29,10 @@ class RandomFormGenerator extends React.Component {
         { field: 'Degree', type: 'text' },
         { field: 'Experience', type: 'number', range: { NumberMin: 1, NumberMax: 10 } },
         { field: 'Status', type: 'text' },
-        { field: 'Date of Birth', type: 'date' },
+        { field: 'Date of Birth', type: 'date', },
       ];
   
-       const batchSize = 1000; 
+       const batchSize = 1; 
       const totalForms = 10000;
       const batches = Math.ceil(totalForms / batchSize);
   
