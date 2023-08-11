@@ -4,6 +4,9 @@ import { Bar, Line, Pie } from 'react-chartjs-2';
 import _ from 'lodash';
 import { Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const ChartComponent = () => {
@@ -22,6 +25,7 @@ const ChartComponent = () => {
   const [filteredData, setFilteredData] = useState(null);
   const [showAgeFilter, setShowAgeFilter] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState(null);
   const vibrantColors = [
     '#16FCF9',
     '#A4FA73',
@@ -227,7 +231,9 @@ const ChartComponent = () => {
       clearDateOfBirthFilters();
     }
   };
-
+  const handleFilterSelect = (event) => {
+    setSelectedFilter(event.target.value);
+  };
   const handleDateFilterClick = () => {
     // Validate date range values for Date of Join
     if (startDateOfJoin && endDateOfJoin) {
@@ -279,15 +285,74 @@ const ChartComponent = () => {
   const clearDateFilters = () => {
     setStartDateOfJoin('');
     setEndDateOfJoin('');
+    toast.success('Cleared Date of Join');
   };
-
+  
   const clearDateOfBirthFilters = () => {
     setStartDateOfBirth('');
     setEndDateOfBirth('');
+    toast.success('Cleared Date of Birth');
   };
+  
 
   const toggleModal = () => {
     setShowModal(!showModal);
+  };
+  const renderFilterInputs = () => {
+    switch (selectedFilter) {
+      case 'age':
+        return (
+          <>
+            <h6>Age {minAge} to {maxAge}</h6>
+            <input
+              type="number"
+              placeholder={`required : ${minAge}`}
+              value={ageRangeStart}
+              onChange={(e) => setAgeRangeStart(e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder={`required : ${maxAge}`}
+              value={ageRangeEnd}
+              onChange={(e) => setAgeRangeEnd(e.target.value)}
+            />
+          </>
+        );
+      case 'dateOfJoin':
+        return (
+          <>
+            <h6>Date of Join {minJoin} to {maxJoin}</h6>
+            <input
+              type="date"
+              value={startDateOfJoin}
+              onChange={(e) => setStartDateOfJoin(e.target.value)}
+            />
+            <input
+              type="date"
+              value={endDateOfJoin}
+              onChange={(e) => setEndDateOfJoin(e.target.value)}
+            />
+          </>
+        );
+      case 'dateOfBirth':
+        return (
+          <>
+            <h6>Date of Birth {minBirth} to {maxBirth}</h6>
+            <input
+              type="date"
+              value={startDateOfBirth}
+              onChange={(e) => setStartDateOfBirth(e.target.value)}
+            />
+            <input
+              type="date"
+              value={endDateOfBirth}
+              onChange={(e) => setEndDateOfBirth(e.target.value)}
+            />
+          </>
+        );
+      default:
+        return null;
+    }
   };
 
   const renderChart = () => {
@@ -401,51 +466,22 @@ const ChartComponent = () => {
               </div>
 
               <div style={{ flex: 1, padding: '10px' }}>
-                <h2 onClick={toggleModal}>Filter</h2>
+                <h2 onClick={toggleModal}>Filters</h2>
                 {/* The modal */}
                 <Modal show={showModal} onHide={toggleModal}>
                   <Modal.Header closeButton>
                     <Modal.Title>Filter Options</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    {/* Add your filter inputs here */}
-                    <h6>Age {minAge} to {maxAge}</h6>
-                    <input
-                      type="number"
-                      placeholder={`required : ${minAge}`}
-                      value={ageRangeStart}
-                      onChange={(e) => setAgeRangeStart(e.target.value)}
-                    />
-                    <input
-                      type="number"
-                      placeholder={`required : ${maxAge}`}
-                      value={ageRangeEnd}
-                      onChange={(e) => setAgeRangeEnd(e.target.value)}
-                    />
+                    <h6>Choose a filter:</h6>
+                    <select value={selectedFilter} onChange={handleFilterSelect}>
+                      <option value="" hidden>Select a filter</option>
+                      <option value="age">Age</option>
+                      <option value="dateOfJoin">Date of Join</option>
+                      <option value="dateOfBirth">Date of Birth</option>
+                    </select>
 
-                    <h6>Date of Join {minJoin} to {maxJoin}</h6>
-                    <input
-                      type="date"
-                      value={startDateOfJoin}
-                      onChange={(e) => setStartDateOfJoin(e.target.value)}
-                    />
-                    <input
-                      type="date"
-                      value={endDateOfJoin}
-                      onChange={(e) => setEndDateOfJoin(e.target.value)}
-                    />
-
-                    <h6>Date of Birth {minBirth} to {maxBirth}</h6>
-                    <input
-                      type="date"
-                      value={startDateOfBirth}
-                      onChange={(e) => setStartDateOfBirth(e.target.value)}
-                    />
-                    <input
-                      type="date"
-                      value={endDateOfBirth}
-                      onChange={(e) => setEndDateOfBirth(e.target.value)}
-                    />
+                    {renderFilterInputs()}
                   </Modal.Body>
                   <Modal.Footer>
                     {/* Add the Clear buttons here */}
@@ -471,6 +507,7 @@ const ChartComponent = () => {
           )}
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 }

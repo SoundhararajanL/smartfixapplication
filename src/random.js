@@ -29,7 +29,7 @@ class RandomFormGenerator extends React.Component {
         { field: 'Degree', type: 'text' },
         { field: 'Experience', type: 'number', range: { NumberMin: 1, NumberMax: 10 } },
         { field: 'Status', type: 'text' },
-        { field: 'Date of Birth', type: 'date', },
+        { field: 'Date of Birth', type: 'date',range: { startDate: null, endDate: "2000-01-01" }  },
       ];
   
        const batchSize = 1; 

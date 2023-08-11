@@ -34,11 +34,13 @@ const FormPage = () => {
     }
   };
 
+
   const handleSelectChange = async (templateId, selectedOption) => {
     try {
       const response = await axios.get(`http://localhost:3000/getFields/${templateId}`);
       const templateFields = response.data;
       setSelectedTemplate(selectedOption);
+      setSelectedTemplateData({ templateId, fields: templateFields }); // Save selected template data
       setFields(templateFields);
       setFormValues({});
     } catch (error) {
@@ -53,7 +55,7 @@ const FormPage = () => {
       // email validation code
     } else if (field && field.type === 'number' && field.range) {
       const { NumberMin, NumberMax } = field.range;
-      const enteredNumber = Number(value);
+      const enteredNumber = Number(value); // Convert the input value to a number
 
       if ((NumberMin !== null && enteredNumber < NumberMin) || (NumberMax !== null && enteredNumber > NumberMax)) {
         const errorMessage = NumberMin !== null && NumberMax !== null
@@ -73,11 +75,12 @@ const FormPage = () => {
       const maxDate = endDate ? new Date(endDate) : null;
 
       const formatDate = (date) => {
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear().toString();
-        return `${day}-${month}-${year}`;
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
       };
+
 
       if ((minDate && selectedDate < minDate) || (maxDate && selectedDate > maxDate)) {
         const formattedStartDate = minDate ? formatDate(minDate) : null;
@@ -102,8 +105,8 @@ const FormPage = () => {
       [name]: value,
     }));
   };
-
-  const handleSubmit = (event) => {
+  const [selectedTemplateData, setSelectedTemplateData] = useState(null);
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (selectedTemplate) {
       const requiredFields = fields.filter((field) => field.required);
@@ -112,43 +115,49 @@ const FormPage = () => {
       if (missingRequiredFields.length > 0) {
         toast.error('Please fill in all the required fields.');
       } else {
-        // Format date fields to JavaScript Date objects
-        const formattedFormValues = {};
-        fields.forEach((field) => {
-          if (field.type === 'date' && formValues[field.field]) {
-            const selectedDate = new Date(formValues[field.field]);
-            formattedFormValues[field.field] = selectedDate;
-          } else {
-            formattedFormValues[field.field] = formValues[field.field];
-          }
-        });
-  
-        const formData = {
-          templateName: selectedTemplate,
-          fields: formattedFormValues,
-        };
-  
-        axios
-          .post('http://localhost:3000/form', formData)
-          .then((response) => {
-            console.log('Form data submitted successfully:', response.data);
-            setFormValues({});
-            toast.success('Form registered successfully', {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: 1000,
-            });
-            setTimeout(() => {
-              window.location.reload(); // Reload the page after a delay (e.g., 2 seconds)
-            }, 2000); // Reload the page
-          })
-          .catch((error) => {
-            console.error('Error submitting form data:', error);
+        try {
+          // Format number fields to numbers and format date fields to full ISO 8601 strings
+          const formattedFormValues = {};
+          fields.forEach((field) => {
+            if (field.type === 'date' && formValues[field.field]) {
+              const selectedDate = new Date(formValues[field.field]);
+              formattedFormValues[field.field] = selectedDate.toISOString(); // Serialize as ISO 8601 string
+            } else if (field.type === 'number' && formValues[field.field]) {
+              const enteredNumber = Number(formValues[field.field]);
+              formattedFormValues[field.field] = enteredNumber;
+            } else {
+              formattedFormValues[field.field] = formValues[field.field];
+            }
           });
+          
+  
+          const formData = {
+            templateName: selectedTemplate,
+            fields: formattedFormValues,
+          };
+  
+          const response = await axios.post('http://localhost:3000/form', formData);
+          console.log('Form data submitted successfully:', response.data);
+          setFormValues({});
+          toast.success('Form registered successfully', {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 1000,
+          });
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } catch (error) {
+          console.error('Error submitting form data:', error);
+        }
       }
     }
   };
-  
-  
+
+
+
+
+
+
 
 
 
